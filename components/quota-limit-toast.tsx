@@ -104,7 +104,7 @@ export function QuotaLimitToast({
                 {!isSelfHosted && (
                     <>
                         <a
-                            href="https://github.com/DayuanJiang/next-ai-draw-io"
+                            href="https://github.com/aliyuzerler/Draw.io"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-border text-foreground hover:bg-muted transition-colors"

@@ -10,6 +10,13 @@ const TEXTS: Record<
     Locale,
     { title: string; text: string; editor: string; docs: string; home: string }
 > = {
+    tr: {
+        title: "Bu sayfa yok",
+        text: "Bağlantı eski olabilir veya adres yanlış yazılmış olabilir.",
+        editor: "Editörü aç",
+        docs: "Belgeler",
+        home: "Ana sayfa",
+    },
     en: {
         title: "This page doesn't exist",
         text: "The link may be old, or the address mistyped.",
@@ -46,7 +53,7 @@ export function NotFoundPage() {
     const first = usePathname().split("/")[1] ?? ""
     const lang = (i18n.locales as readonly string[]).includes(first)
         ? (first as Locale)
-        : "en"
+        : i18n.defaultLocale
     const t = TEXTS[lang]
     // The server's title is in English: it cannot know the language
     useEffect(() => {

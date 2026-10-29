@@ -4,6 +4,7 @@ import { i18n, type Locale } from "@/lib/i18n/config"
 export const SITE_URL = "https://next-ai-drawio.jiang.jp"
 
 export const OG_LOCALE: Record<Locale, string> = {
+    tr: "tr_TR",
     en: "en_US",
     zh: "zh_CN",
     ja: "ja_JP",

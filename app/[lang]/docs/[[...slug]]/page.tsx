@@ -35,6 +35,16 @@ const TEXTS: Record<
         inSimplified: string
     }
 > = {
+    tr: {
+        docs: "Belgeler",
+        onThisPage: "Bu sayfada",
+        edit: "Bu sayfayı GitHub'da düzenle",
+        previous: "Önceki",
+        next: "Sonraki",
+        inEnglish:
+            "Bu sayfanın Türkçe çevirisi henüz yok, aşağıda İngilizcesi var.",
+        inSimplified: "",
+    },
     en: {
         docs: "Docs",
         onThisPage: "On this page",

@@ -14,40 +14,29 @@ const redirectFor = (acceptLanguage?: string, path = "/") => {
     return response?.headers.get("location")
 }
 
+// Turkish-first: every visitor without a locale path goes to the default
+// (Turkish) page, whatever the browser's language; other languages stay
+// reachable through their /<locale> paths.
 describe("locale redirect", () => {
-    it("sends Taiwan, Hong Kong and Macau to Traditional Chinese", () => {
-        expect(redirectFor("zh-TW,zh;q=0.9")).toBe("http://localhost/zh-Hant")
-        expect(redirectFor("zh-HK")).toBe("http://localhost/zh-Hant")
-        expect(redirectFor("zh-MO")).toBe("http://localhost/zh-Hant")
-        expect(redirectFor("zh-Hant-TW")).toBe("http://localhost/zh-Hant")
-    })
-
-    it("sends other Chinese, Japanese and English to their locale", () => {
-        expect(redirectFor("zh-CN,zh;q=0.9")).toBe("http://localhost/zh")
-        expect(redirectFor("ja-JP,ja;q=0.9")).toBe("http://localhost/ja")
-        expect(redirectFor("en-US,en;q=0.9")).toBe("http://localhost/en")
-    })
-
-    it("follows the order of preference", () => {
+    it("sends every visitor to Turkish by default", () => {
+        expect(redirectFor("zh-TW,zh;q=0.9")).toBe("http://localhost/tr")
+        expect(redirectFor("zh-CN,zh;q=0.9")).toBe("http://localhost/tr")
+        expect(redirectFor("ja-JP,ja;q=0.9")).toBe("http://localhost/tr")
+        expect(redirectFor("en-US,en;q=0.9")).toBe("http://localhost/tr")
         expect(redirectFor("fr-FR,ja;q=0.8,en;q=0.5")).toBe(
-            "http://localhost/ja",
+            "http://localhost/tr",
         )
     })
 
-    it("falls back to English", () => {
-        expect(redirectFor()).toBe("http://localhost/en")
-        expect(redirectFor("*")).toBe("http://localhost/en")
-        expect(redirectFor("de-DE")).toBe("http://localhost/en")
-    })
-
-    it("skips a malformed tag and uses the next one", () => {
-        expect(redirectFor("en_US,ja;q=0.8")).toBe("http://localhost/ja")
+    it("sends requests without a language to Turkish", () => {
+        expect(redirectFor()).toBe("http://localhost/tr")
+        expect(redirectFor("*")).toBe("http://localhost/tr")
+        expect(redirectFor("de-DE")).toBe("http://localhost/tr")
+        expect(redirectFor("en_US,ja;q=0.8")).toBe("http://localhost/tr")
     })
 
     it("keeps the rest of the path", () => {
-        expect(redirectFor("zh-TW", "/about")).toBe(
-            "http://localhost/zh-Hant/about",
-        )
+        expect(redirectFor("zh-TW", "/about")).toBe("http://localhost/tr/about")
     })
 
     it("redirects the home page temporarily and other pages permanently", () => {

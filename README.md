@@ -1,113 +1,83 @@
 <div align="center">
 
-# Next AI Draw.io
+# Next AI Draw.io (Türkçe)
 
-**Draw and edit draw.io diagrams by chatting with an AI.**
+**Yapay zekâ ile sohbet ederek draw.io diyagramları çizin ve düzenleyin — tamamen Türkçe arayüzle.**
 
-English | [中文](./docs/cn/README_CN.md) | [日本語](./docs/ja/README_JA.md)
+Türkçe | [English](./README_EN_UPSTREAM.md) · [中文](./docs/cn/README_CN.md) · [日本語](./docs/ja/README_JA.md)
 
-[![TrendShift](https://trendshift.io/api/badge/repositories/15449)](https://next-ai-drawio.jiang.jp/)
-
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Sponsor](https://img.shields.io/badge/Sponsor-❤-ea4aaa)](https://github.com/sponsors/DayuanJiang)
-
-[**Live Demo**](https://next-ai-drawio.jiang.jp/) · [**Docs**](https://next-ai-drawio.jiang.jp/en/docs) · [**Gallery**](https://next-ai-drawio.jiang.jp/en/gallery) · [**Desktop App**](https://github.com/DayuanJiang/next-ai-draw-io/releases) · [**MCP Server**](https://next-ai-drawio.jiang.jp/en/mcp)
+[![License: Apache 2.0](https://img.shields.io/badge/Lisans-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-149eca)](https://react.dev/)
+[![Arayüz](https://img.shields.io/badge/Aray%C3%BCz-T%C3%BCrk%C3%A7e-red)](./docs/tr/introduction.md)
 
 </div>
 
-https://github.com/user-attachments/assets/66b9f12f-219f-4d62-acc0-0725e6850eec
+Bir cümleyle diyagramı tarif edin; yapay zekâ onu gerçek bir draw.io tuvaline çizsin. Herhangi bir draw.io dosyası gibi elle düzenleyin ya da birkaç şekli seçip yapay zekâya ne değiştireceğini söyleyin. Yapay zekânın her değişikliği, karşılaştırılabilir, geri yüklenebilir veya geri alınabilir bir sürüme dönüşür; sonuç `.drawio`, `.png` ya da `.svg` olarak dışa aktarılır.
 
-Describe a diagram in a sentence and the AI draws it on a real draw.io canvas. Edit it by hand like any draw.io file, or select a few shapes and tell the AI what to change. Every AI change is a version you can compare, restore or undo, and the result exports as `.drawio`, `.png` or `.svg`.
+Proje; web uygulaması, Windows / macOS / Linux için masaüstü uygulaması ve Claude Code, Cursor, VS Code gibi yapay zekâ ajanları için bir MCP sunucusu olarak kullanılabiliyor.
 
-Available as a web app, a desktop app for Windows, macOS and Linux, and an MCP server for AI agents such as Claude Code, Cursor and VS Code.
+> **Bu fork hakkında:** Bu depo, [DayuanJiang/next-ai-draw-io](https://github.com/DayuanJiang/next-ai-draw-io) projesinin **Türkçe yerelleştirilmiş** sürümüdür. Arayüz varsayılan dili Türkçe yapılmış, 559 arayüz metni Türkçe'ye çevrilmiş ve **14 sayfalık dokümantasyonun tamamı** (`docs/tr/`) Türkçe olarak yazılmıştır.
 
-## Highlights
+## Ekran Görüntüleri
 
-**Draw**
+| Ana ekran — "Ne çizmek istersin?" | Çalışma alanı — AI çizimi |
+|---|---|
+| ![Ana ekran](./docs/images/01-lobby.png) | ![Çalışma alanı](./docs/images/02-workspace.png) |
 
--   Architecture diagrams, flowcharts, sequence diagrams and more from one sentence, with built-in AWS, Azure, GCP and Kubernetes icon libraries
--   Connectors can carry a flowing animation
--   Upload a screenshot or a sketch and the AI redraws it; upload PDF, Markdown, code and other text files and get a diagram of their content
+| Koyu tema | Ayarlar · Modeller |
+|---|---|
+| ![Koyu tema](./docs/images/09-workspace-dark.png) | ![Ayarlar Modeller](./docs/images/03-settings-modeller.png) |
 
-**Edit**
+| Türkçe Belgeler | Galeri |
+|---|---|
+| ![Belgeler](./docs/images/07-docs.png) | ![Galeri](./docs/images/06-gallery.png) |
 
--   Edit by chat: changes stream onto the canvas and the shapes the AI just changed are highlighted
--   Ask about a selection: select shapes on the canvas and the AI changes only those
--   Versions and undo: every AI change is a version card with a thumbnail; compare it with the canvas, restore it or undo it, and Ctrl+Z on the canvas also takes back an AI change in one step
--   It is a normal draw.io diagram: double-click to rename, drag, restyle, use several pages, and export as `.drawio`, `.png`, `.svg` or `.drawio.svg` at any time
+| Ayarlar · Genel | Ayarlar · Çizim | MCP Sunucusu |
+|---|---|---|
+| ![Genel](./docs/images/04-settings-genel.png) | ![Çizim](./docs/images/05-settings-cizim.png) | ![MCP](./docs/images/08-mcp.png) |
 
-**Use**
+## Öne Çıkanlar
 
--   25 model providers, including an OpenAI-compatible preset for any other URL; enter your own API key in the browser and it stays on your machine
--   Models that reason show their thinking
--   Dark mode; the interface is available in English, Simplified Chinese, Traditional Chinese and Japanese
+**Çiz**
 
-## Examples
+- Mimari diyagramlar, akış şemaları, dizilim diyagramları ve daha fazlası tek bir cümleden; yerleşik **AWS, Azure, GCP ve Kubernetes** simge kitaplıklarıyla
+- Bağlayıcılar akış animasyonu taşıyabilir
+- Ekran görüntüsü ya da el çizimi bir eskiz yükleyin, yapay zekâ yeniden çizsin; PDF, Markdown, kod ve diğer metin dosyalarını yükleyin, içeriklerinin diyagramını alın
+- Bir web sayfasının adresini yapıştırın, içeriğinden diyagram üretinsin
 
-<div align="center">
-<table width="100%">
-  <tr>
-    <td width="50%" valign="top">
-      <strong>Highly available web app on AWS</strong><br />
-      <p><strong>Prompt:</strong> Draw an AWS architecture for a highly available web app across two Availability Zones with AWS icons: Route 53, CloudFront with AWS WAF, an Application Load Balancer, ECS Fargate services in private subnets, Aurora PostgreSQL with a writer and a reader, ElastiCache for Redis, S3 for static assets, NAT gateways, and CloudWatch for monitoring.</p>
-      <p><strong>Model:</strong> Claude Opus 5.5, in Claude Code with the MCP server</p>
-      <img src="./public/gallery/aws-ha.svg" alt="Highly available web app on AWS" width="400" />
-    </td>
-    <td width="50%" valign="top">
-      <strong>Kubernetes deployment for a web shop</strong><br />
-      <p><strong>Prompt:</strong> Draw a Kubernetes deployment for a web shop: an ingress, web and API deployments with their services and pods, a Redis StatefulSet with a persistent volume, a ConfigMap, a Secret, and an autoscaler on the API.</p>
-      <p><strong>Model:</strong> Claude Opus 5.5, in Claude Code with the MCP server</p>
-      <img src="./public/gallery/kubernetes.svg" alt="Kubernetes deployment for a web shop" width="400" />
-    </td>
-  </tr>
-  <tr>
-    <td width="50%" valign="top">
-      <strong>ER diagram of an online shop</strong><br />
-      <p><strong>Prompt:</strong> Draw an ER diagram for an online shop: customers, addresses, orders, order items, products, categories and payments, with primary and foreign keys and the cardinality of each relationship.</p>
-      <p><strong>Model:</strong> Claude Opus 5.5, in Claude Code with the MCP server</p>
-      <img src="./public/gallery/er-shop.svg" alt="ER diagram of an online shop" width="400" />
-    </td>
-    <td width="50%" valign="top">
-      <strong>BPMN expense claim process</strong><br />
-      <p><strong>Prompt:</strong> Draw a BPMN process for an expense claim: an employee submits it, the manager approves or rejects it, finance checks the receipts and pays, and the claim goes back to the employee when receipts are missing.</p>
-      <p><strong>Model:</strong> Claude Opus 5.5, in Claude Code with the MCP server</p>
-      <img src="./public/gallery/bpmn-expense.svg" alt="BPMN expense claim process" width="400" />
-    </td>
-  </tr>
-  <tr>
-    <td width="50%" valign="top">
-      <strong>Transformer architecture with animated connectors</strong><br />
-      <p><strong>Prompt:</strong> Give me an animated connector diagram of transformer's architecture.</p>
-      <p><strong>Model:</strong> Claude Opus 5.5, in Claude Code with the MCP server</p>
-      <img src="./public/gallery/transformer.svg" alt="Transformer architecture with animated connectors" width="400" />
-    </td>
-    <td width="50%" valign="top">
-      <strong>Customer journey map of a banking app</strong><br />
-      <p><strong>Prompt:</strong> Draw a customer journey map for a mobile banking app across five stages (discover, sign up, first payment, everyday use, get help), with the customer's actions, touchpoints, feelings and pain points in each stage, and an opportunity for each pain point.</p>
-      <p><strong>Model:</strong> Claude Opus 5.5, in Claude Code with the MCP server</p>
-      <img src="./public/gallery/journey-map.svg" alt="Customer journey map of a banking app" width="400" />
-    </td>
-  </tr>
-</table>
-</div>
+**Düzenle**
 
-More examples, each with its prompt and model, are in the **[gallery](https://next-ai-drawio.jiang.jp/en/gallery)**.
+- Sohbetle düzenleme: değişiklikler tuvale canlı akar, yapay zekânın az önce değiştirdiği şekiller vurgulanır
+- Seçime soru sor: tuvaldeki şekilleri seçin, yapay zekâ yalnızca onları değiştirsin
+- Sürümler ve geri alma: yapay zekânın her değişikliği, küçük resimli bir sürüm kartına dönüşür; tuvalle karşılaştırın, geri yükleyin ya da geri alın — tuvalde Ctrl+Z de bir adımda son AI değişikliğini geri alır
+- Sonuç sıradan bir draw.io diyagramıdır: çift tıkla yeniden adlandırın, sürükleyin, yeniden biçimlendirin, birden çok sayfa kullanın, istediğiniz an `.drawio`, `.png`, `.svg` ya da `.drawio.svg` olarak dışa aktarın
 
-## Use it
+**Kullan**
 
-### Online demo
+- 25 model sağlayıcısı; başka herhangi bir adres için OpenAI uyumlu hazır ayar dahil — kendi API anahtarınızı tarayıcıya girin, anahtar makinenizden çıkmaz
+- Akıl yürüten modeller düşüncelerini gösterir
+- Koyu tema; arayüz **Türkçe**, İngilizce, Basitleştirilmiş Çince, Geleneksel Çince ve Japonca
 
-Open [next-ai-drawio.jiang.jp](https://next-ai-drawio.jiang.jp/), nothing to install. The demo has a usage limit; click the settings icon in the chat panel and enter your own provider and API key to lift it. The key stays in your browser and is never sent to the server for storage.
+## Nasıl Çalışır
 
-### Desktop app
+Bir diyagram, draw.io XML'idir. Uygulama, isteğinizi ve geçerli diyagramı seçtiğiniz modele gönderir; model yeni ya da değiştirilmiş XML'i araç çağrılarıyla (`display_diagram`, `edit_diagram`, `append_diagram`, `get_shape_library`) üretir ve tuval XML'i gelirken canlı çizer. draw.io editörü uygulamanın içinde paketlenmiştir; bu sayede uygulama editörü doğrudan sürebilir, el düzenlemelerinizi geri okuyabilir ve değişen şekilleri çerçeveleyebilir.
 
-Download the Windows, macOS or Linux installer from the [Releases page](https://github.com/DayuanJiang/next-ai-draw-io/releases).
+Teknolojiler: **Next.js 16** (App Router) · **React 19** · **Vercel AI SDK** (`ai` + `@ai-sdk/*`) · **draw.io** (same-origin iframe) · **Zustand** · **Tailwind CSS 4** · **Electron** (masaüstü)
 
-### In your AI agent (MCP)
+## Kullanım
 
-https://github.com/user-attachments/assets/6f53a67b-ab21-4113-9fee-7fb32f9de678
+### Çevrimiçi demo
 
-Through MCP (Model Context Protocol, the protocol AI agents use to call outside tools), Claude Desktop, Cursor, VS Code and others can draw draw.io diagrams directly. Add this to your client's MCP configuration:
+[Orijinal projenin demo sitesini](https://next-ai-drawio.jiang.jp/) kurulum yapmadan deneyebilirsiniz. Demo günlük kullanım sınırına sahiptir; sohbet panelindeki ayarlar simgesinden kendi sağlayıcınızı ve API anahtarınızı girerek sınırı kaldırabilirsiniz. Anahtar yalnızca tarayıcınızda tutulur, sunucuda saklanmaz.
+
+### Masaüstü uygulaması
+
+Windows, macOS ve Linux kurulumlarını [orijinal projenin sürümler sayfasından](https://github.com/DayuanJiang/next-ai-draw-io/releases) indirebilirsiniz.
+
+### Yapay zekâ ajanınızda (MCP)
+
+MCP (Model Context Protocol) üzerinden Claude Code, Claude Desktop, Cursor, VS Code, Codex ve Cline gibi istemciler doğrudan draw.io diyagramı çizebilir. İstemcinizin MCP yapılandırmasına şunu ekleyin:
 
 ```json
 {
@@ -120,72 +90,181 @@ Through MCP (Model Context Protocol, the protocol AI agents use to call outside 
 }
 ```
 
-In VS Code or Cursor, one click adds it: [![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_Server-0098FF?style=flat-square)](https://insiders.vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522drawio%2522%252C%2522command%2522%253A%2522npx%2522%252C%2522args%2522%253A%255B%2522%2540next-ai-drawio%252Fmcp-server%2540latest%2522%255D%257D) [![Add to Cursor](https://img.shields.io/badge/Cursor-Add_Server-000000?style=flat-square)](https://cursor.com/en/install-mcp?name=drawio&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyJAbmV4dC1haS1kcmF3aW8vbWNwLXNlcnZlckBsYXRlc3QiXX0%3D)
-
-For Claude Code, one command does it (`--scope user` makes it available in every project):
+Claude Code için tek komut yeterlidir (`--scope user` her projede kullanılabilir kılar):
 
 ```bash
 claude mcp add --scope user drawio -- npx @next-ai-drawio/mcp-server@latest
 ```
 
-It is also a plugin in the Claude Code community marketplace (Claude Code 2.1.275 or later):
+VS Code ve Cursor'da tek tıkla ekleme:
 
-```text
-/plugin install next-ai-drawio --marketplace anthropics/claude-plugins-community
-```
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_Server-0098FF?style=flat-square)](https://insiders.vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522drawio%2522%252C%2522command%2522%253A%2522npx%2522%252C%2522args%2522%253A%255B%2522%2540next-ai-drawio%252Fmcp-server%2540latest%2522%255D%257D) [![Add to Cursor](https://img.shields.io/badge/Cursor-Add_Server-000000?style=flat-square)](https://cursor.com/en/install-mcp?name=drawio&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyJAbmV4dC1haS1kcmF3aW8vbWNwLXNlcnZlckBsYXRlc3QiXX0%3D)
 
-Then ask the AI for "a flowchart of user authentication with login, MFA and session management" and the diagram appears in your browser as it is drawn. The MCP server has most of the web app's drawing features:
+Sonra yapay zekâdan "giriş, MFA ve oturum yönetimi içeren bir kullanıcı kimlik doğrulama akış şeması çiz" diye isteyin; diyagram tarayıcınızda çizilirken belirir. MCP sunucusu, web uygulamasındaki çizim özelliklerinin çoğunu taşır:
 
--   The same drawing rules, icon libraries (AWS, Azure, GCP, Kubernetes and more) and canvas as the web app: the AI's changes are outlined, one Ctrl+Z takes them back, and the AI reads the shapes you select
--   A screenshot tool, so the AI looks at the rendered diagram and fixes it
--   Version history, several pages, export as `.drawio`, `.png`, `.svg` or `.drawio.svg`, and auto-save to `~/.next-ai-drawio/`; the draw.io editor ships inside the package, so the preview works offline
+- Web uygulamasıyla aynı çizim kuralları, simge kitaplıkları (AWS, Azure, GCP, Kubernetes ve daha fazlası) ve tuval: değişiklikler çerçevelenir, Ctrl+Z geri alır, seçtiğiniz şekilleri yapay zekâ okur
+- Ekran görüntüsü aracı: yapay zekâ çizilen diyagrama bakıp hataları düzeltir
+- Sürüm geçmişi, birden çok sayfa, `.drawio` / `.png` / `.svg` / `.drawio.svg` dışa aktarma ve `~/.next-ai-drawio/` altına otomatik kaydetme; draw.io editörü paketin içinde gelir, önizleme çevrimdışı çalışır
 
-The [MCP server page](https://next-ai-drawio.jiang.jp/en/mcp) has the setup for Codex, VS Code, Cursor and other clients, every tool, and how it compares with other draw.io MCP servers.
+Ayrıntılar: [Claude Code'dan kullanın](./docs/tr/claude-code.md) · [Diğer MCP istemcileri](./docs/tr/mcp-clients.md)
 
-### Compared with draw.io's built-in AI
+## Örnekler
 
-draw.io has its own Generate tool (Arrange > Insert > Generate). It runs inside draw.io on a free hosted model or your own API key, and it can change a diagram, page or selection that you attach to its chat. Next AI Draw.io sends the current canvas, including your hand edits, with every message, turns every AI change into a version you can compare or restore, and works with 25 providers, including local models through Ollama, on the demo site, in the desktop app or on your own server.
+<div align="center">
+<table width="100%">
+  <tr>
+    <td width="50%" valign="top">
+      <strong>AWS üzerinde yüksek erişilebilirlikli web uygulaması</strong><br />
+      <p><strong>İstem:</strong> AWS üzerinde iki Availability Zone'a yayılmış, yüksek erişilebilirlikli bir web uygulaması mimarisi çiz, AWS simgeleriyle: Route 53, AWS WAF'lı CloudFront, Application Load Balancer, özel alt ağlarda ECS Fargate servisleri, writer ve reader'lı Aurora PostgreSQL, Redis için ElastiCache, statik dosyalar için S3, NAT gateway'ler ve izleme için CloudWatch.</p>
+      <p><strong>Model:</strong> Claude Opus 5.5, Claude Code + MCP sunucusu</p>
+      <img src="./public/gallery/aws-ha.svg" alt="AWS üzerinde yüksek erişilebilirlikli web uygulaması" width="400" />
+    </td>
+    <td width="50%" valign="top">
+      <strong>Web mağazası için Kubernetes dağıtımı</strong><br />
+      <p><strong>İstem:</strong> Bir web mağazası için Kubernetes dağıtımı çiz: bir ingress, servisleri ve pod'larıyla web ve API deployment'ları, kalıcı volume'lu bir Redis StatefulSet, bir ConfigMap, bir Secret ve API üzerinde bir autoscaler.</p>
+      <p><strong>Model:</strong> Claude Opus 5.5, Claude Code + MCP sunucusu</p>
+      <img src="./public/gallery/kubernetes.svg" alt="Web mağazası için Kubernetes dağıtımı" width="400" />
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <strong>Çevrimiçi mağazanın ER diyagramı</strong><br />
+      <p><strong>İstem:</strong> Bir çevrimiçi mağaza için ER diyagramı çiz: müşteriler, adresler, siparişler, sipariş kalemleri, ürünler, kategoriler ve ödemeler; birincil ve yabancı anahtarlarla ve her ilişkinin kardinalitesi.</p>
+      <p><strong>Model:</strong> Claude Opus 5.5, Claude Code + MCP sunucusu</p>
+      <img src="./public/gallery/er-shop.svg" alt="Çevrimiçi mağazanın ER diyagramı" width="400" />
+    </td>
+    <td width="50%" valign="top">
+      <strong>BPMN gider talebi süreci</strong><br />
+      <p><strong>İstem:</strong> Bir gider talebi için BPMN süreci çiz: çalışan talebi gönderir, yönetici onaylar ya da reddeder, finans dekontları kontrol eder ve öder; dekont eksikse talep çalışana geri döner.</p>
+      <p><strong>Model:</strong> Claude Opus 5.5, Claude Code + MCP sunucusu</p>
+      <img src="./public/gallery/bpmn-expense.svg" alt="BPMN gider talebi süreci" width="400" />
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <strong>Animasyonlu bağlayıcılarla Transformer mimarisi</strong><br />
+      <p><strong>İstem:</strong> Transformer mimarisinin animasyonlu bağlayıcılı diyagramını ver.</p>
+      <p><strong>Model:</strong> Claude Opus 5.5, Claude Code + MCP sunucusu</p>
+      <img src="./public/gallery/transformer.svg" alt="Animasyonlu bağlayıcılarla Transformer mimarisi" width="400" />
+    </td>
+    <td width="50%" valign="top">
+      <strong>Bankacılık uygulaması müşteri yolculuğu haritası</strong><br />
+      <p><strong>İstem:</strong> Bir mobil bankacılık uygulaması için beş aşamalı (keşfet, kayıt ol, ilk ödeme, günlük kullanım, yardım al) müşteri yolculuğu haritası çiz; her aşamada müşterinin eylemleri, temas noktaları, duyguları ve zorlukları, her zorluk için bir fırsat.</p>
+      <p><strong>Model:</strong> Claude Opus 5.5, Claude Code + MCP sunucusu</p>
+      <img src="./public/gallery/journey-map.svg" alt="Bankacılık uygulaması müşteri yolculuğu haritası" width="400" />
+    </td>
+  </tr>
+</table>
+</div>
 
-## Self-host
+İstemi ve modeliyle birlikte daha fazla örnek, uygulamanın içindeki **Galeri** sayfasındadır (`/tr/gallery`).
 
-### Run locally
+## Kendi Sunucunuzda Çalıştırma
+
+### Yerel çalıştırma
 
 ```bash
-git clone https://github.com/DayuanJiang/next-ai-draw-io
-cd next-ai-draw-io
+git clone https://github.com/aliyuzerler/Draw.io
+cd Draw.io
 npm install
-cp env.example .env.local   # add your provider and API key, see "Models and providers" below
+cp env.example .env.local   # sağlayıcınızı ve API anahtarınızı ekleyin, aşağıya bakın
 npm run dev
 ```
 
-Open [http://localhost:6002](http://localhost:6002).
+[http://localhost:6002](http://localhost:6002) adresini açın. Arayüz varsayılan olarak Türkçe açılır; dil menüsünden İngilizce, Çince ya da Japonca seçebilirsiniz.
 
-### One-click deploy
+### Docker
 
-| Platform | How |
+```bash
+docker run -d -p 3000:3000 \
+  -e AI_PROVIDER=openai \
+  -e AI_MODEL=gpt-4o \
+  -e OPENAI_API_KEY=your_api_key \
+  ghcr.io/dayuanjiang/next-ai-draw-io:latest
+```
+
+Ayrıntılar: [Docker ile çalıştırın](./docs/tr/docker.md).
+
+### Tek tıkla dağıtım
+
+| Platform | Nasıl |
 | --- | --- |
-| Tencent EdgeOne Pages | [![Deploy to EdgeOne Pages](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://edgeone.ai/pages/new?repository-url=https%3A%2F%2Fgithub.com%2FDayuanJiang%2Fnext-ai-draw-io) Deploying there also gives you a [daily free quota for DeepSeek models](https://pages.edgeone.ai/document/edge-ai) |
-| Vercel | [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FDayuanJiang%2Fnext-ai-draw-io) Set the same environment variables in the Vercel dashboard as in your `.env.local` |
-| Cloudflare Workers | [Cloudflare deploy guide](./docs/en/cloudflare-deploy.md) |
-| Docker | [Docker guide](./docs/en/docker.md) |
-| Offline or intranet | [Offline deployment](./docs/en/offline-deployment.md) |
+| Vercel | [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Faliyuzerler%2FDraw.io) Ortam değişkenlerini Vercel panosunda, `.env.local`dekiyle aynı biçimde ayarlayın |
+| Cloudflare Workers | [Cloudflare dağıtım rehberi](./docs/tr/cloudflare-deploy.md) |
+| Docker | [Docker rehberi](./docs/tr/docker.md) |
+| Çevrimdışı / intranet | [Çevrimdışı dağıtım](./docs/tr/offline-deployment.md) |
+| Yönetim paneli | [Yönetim paneli rehberi](./docs/tr/admin-panel.md) |
 
-### Models and providers
+### Modeller ve sağlayıcılar
 
-25 providers are supported: AWS Bedrock (default), OpenAI, Anthropic, Google AI, Google Vertex AI, Azure OpenAI, Ollama, OpenRouter, AIHubMix, DeepSeek, SiliconFlow, SGLang, Vercel AI Gateway, Tencent EdgeOne, ByteDance Doubao, ModelScope, Zhipu GLM, Qwen, Qiniu, Kimi, MiniMax, Novita, Xiaomi MiMo, Atlas Cloud, and an OpenAI-compatible preset for any other URL (vLLM, LM Studio, a gateway). The environment variables and notes for each are in the [provider configuration guide](./docs/en/ai-providers.md).
+25 sağlayıcı desteklenir: AWS Bedrock (varsayılan), OpenAI, Anthropic, Google AI, Google Vertex AI, Azure OpenAI, Ollama, OpenRouter, AIHubMix, DeepSeek, SiliconFlow, SGLang, Vercel AI Gateway, Tencent EdgeOne, ByteDance Doubao, ModelScope, Zhipu GLM, Qwen, Qiniu, Kimi, MiniMax, Novita, Xiaomi MiMo, Atlas Cloud ve herhangi başka bir adres için OpenAI uyumlu hazır ayar (vLLM, LM Studio, API ağ geçidi). Her sağlayıcının ortam değişkenleri ve notları: [Yapay zekâ sağlayıcıları](./docs/tr/ai-providers.md).
 
-**Which model**: the task is to produce long text in a strict format (draw.io XML), so pick a capable model; small models tend to produce broken diagrams.
+**Hangi model:** Görev, katı bir biçime uymak zorunda olan uzun metin (draw.io XML) üretmektir; bu yüzden yetenekli bir model seçin. Küçük modeller genellikle bozuk diyagramlar üretir. Önerilen: Claude Sonnet 4.5 / Opus 4.5, GPT-5.2, Gemini 3 Pro.
 
-**Several models and the admin panel**: list several model IDs in `AI_MODEL` separated by commas, or configure models from several providers with the `AI_MODELS_CONFIG` environment variable or an `ai-models.json` file, and every user can use them without a key of their own. Set `ADMIN_PASSWORD` and open `/admin` to manage models, access codes, feature switches, observability and quotas from a web page; see the [admin panel guide](./docs/en/admin-panel.md).
+**Birden çok model ve yönetim paneli:** `AI_MODEL` içine virgülle ayırarak birkaç model kimliği listeleyin ya da `AI_MODELS_CONFIG` ortam değişkeniyle ya da `ai-models.json` dosyasıyla birden çok sağlayıcının modelini yapılandırın; herkes onları kendi anahtarı olmadan kullanabilir. `ADMIN_PASSWORD` ayarlayıp `/admin` yolunu açarak modelleri, erişim kodlarını, özellik anahtarlarını, gözlemlenebilirliği ve kotaları bir web sayfasından yönetebilirsiniz; bkz. [Yönetim paneli](./docs/tr/admin-panel.md).
 
-## Support
+## Türkçe Arayüz ve Belgeler
 
--   Questions and ideas: open a [GitHub issue](https://github.com/DayuanJiang/next-ai-draw-io/issues) or email me[at]jiang.jp
--   Common problems: [FAQ](./docs/en/FAQ.md)
--   If the project is useful to you, consider [sponsoring](https://github.com/sponsors/DayuanJiang) to help keep the demo site running
+Bu fork'un Türkçe'ye getirdikleri:
 
-<div align="center">
+- **Arayüz çevirisi**: 559 metin (sohbet, ayarlar, menüler, diyaloglar, hata iletileri, boş durumlar) `lib/i18n/dictionaries/tr.json` içinde; varsayılan dil Türkçe
+- **Dokümantasyon**: Aşağıdaki 14 rehberin tamamı Türkçe yazıldı ve uygulamadaki **Belgeler** sayfasında yayımlanır:
 
-[![Star History Chart](https://api.star-history.com/svg?repos=DayuanJiang/next-ai-draw-io&type=date&legend=top-left)](https://www.star-history.com/#DayuanJiang/next-ai-draw-io&type=date&legend=top-left)
+| Rehber | Konu |
+|---|---|
+| [Giriş](./docs/tr/introduction.md) | Proje tanıtımı, kullanım yolları, mimari |
+| [Çizme ve düzenleme](./docs/tr/editor.md) | Editör kullanımı, dosya yükleme, dışa aktarma |
+| [Sürümler ve geri alma](./docs/tr/versions.md) | Sürüm kartları, karşılaştırma, geri yükleme |
+| [Ayarlar](./docs/tr/settings.md) | Genel, çizim ve model ayarları |
+| [Metinden AWS mimari diyagramları](./docs/tr/aws-architecture.md) | AWS simgeleriyle mimari çizimi |
+| [Akış şemaları ve dizilim diyagramları](./docs/tr/flowcharts.md) | Akış şeması, BPMN, dizilim diyagramı ipuçları |
+| [Claude Code'dan kullanın](./docs/tr/claude-code.md) | MCP kurulumu ve kullanımı |
+| [Diğer MCP istemcileri](./docs/tr/mcp-clients.md) | Codex, VS Code, Cursor, Cline |
+| [Yapay zekâ sağlayıcıları](./docs/tr/ai-providers.md) | 25 sağlayıcının ortam değişkenleri |
+| [Docker ile çalıştırın](./docs/tr/docker.md) | Kapsayıcı kurulumu ve yapılandırma |
+| [Çevrimdışı ya da intranette çalıştırın](./docs/tr/offline-deployment.md) | İnternetsiz ağlarda kurulum |
+| [Cloudflare Workers'a dağıtın](./docs/tr/cloudflare-deploy.md) | OpenNext ile dağıtım |
+| [Yönetim paneli](./docs/tr/admin-panel.md) | Sunucu ayarlarını web'den yönetme |
+| [Sık sorulan sorular](./docs/tr/FAQ.md) | Sık karşılaşılan sorunlar ve çözümleri |
 
-</div>
+- **Masaüstü menüleri**: Electron uygulamasının menü metinleri de Türkçe'ye çevrilmiştir
+- **SEO ve PWA**: Site başlığı, açıklaması ve manifest Türkçe
+
+Dil ekleme ya da metin değiştirme için: `lib/i18n/dictionaries/tr.json` (arayüz) ve `docs/tr/` (belgeler). Sağlayıcı notları gibi çok dilli metinler `lib/providers.ts` içinde `tr` alanını da taşır.
+
+## Geliştirme
+
+```bash
+npm run dev        # geliştirme sunucusu (6002 portu)
+npm run build      # üretim derlemesi
+npm start          # üretim sunucusu (6001 portu)
+npm test           # vitest birim testleri
+npm run test:e2e   # playwright uçtan uca testler
+```
+
+```
+lib/system-prompts.ts      # Yapay zekâya verilen çizim talimatları (İngilizce kalmalı — çevirmeyin)
+lib/chat-tools.ts          # 4 AI aracının tanımları (display/edit/append/get_shape_library)
+lib/drawio/editor-bridge.ts# React ↔ draw.io iframe köprüsü
+lib/i18n/                  # Arayüz çevirileri (tr.json, en.json, ...)
+components/workspace/      # Ana çalışma alanı
+components/chat/           # Sohbet paneli, sürüm kartları, araç etkinliği
+components/canvas/         # Tuval, sürüm şeridi, karşılaştırma penceresi
+packages/mcp-server/       # MCP sunucusu (@next-ai-drawio/mcp-server)
+electron/                  # Masaüstü uygulaması
+docs/tr/                   # Türkçe dokümantasyon
+docs/images/               # Bu README'deki ekran görüntüleri
+```
+
+> **Not:** `lib/system-prompts.ts` içindeki sistem istemleri bilinçli olarak İngilizce bırakılmıştır; yapay zekânın XML üretim kalitesi İngilizce talimatlara bağlıdır. Kullanıcının gördüğü tüm metinler Türkçe'dir.
+
+## Destek ve Teşekkürler
+
+Bu proje, **[DayuanJiang](https://github.com/DayuanJiang)'ın** [next-ai-draw-io](https://github.com/DayuanJiang/next-ai-draw-io) projesinin bir fork'u üzerinde Türkçe yerelleştirmedir. Orijinal projeye katkılarından dolayı teşekkürler; projeyi beğendiyseniz orijinal depoya yıldız vermeyi ve [sponsora olmayı](https://github.com/sponsors/DayuanJiang) düşünebilirsiniz.
+
+- Sorunlar ve öneriler: bu depoda bir [GitHub issue](https://github.com/aliyuzerler/Draw.io/issues) açın
+- Sık karşılaşılan sorunlar: [SSS](./docs/tr/FAQ.md)
+
+## Lisans
+
+[Apache 2.0](./LICENSE)

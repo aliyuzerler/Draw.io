@@ -215,6 +215,7 @@ const defs = {
         ownRequestPath: true,
         optionsOpen: true,
         baseUrlHint: {
+            tr: "Anthropic uyumlu API için /anthropic (önerilir), OpenAI uyumlu API için /v1 kullanın",
             en: "Use /anthropic for Anthropic-compatible API (recommended), or /v1 for OpenAI-compatible API",
             zh: "使用 /anthropic 端点为 Anthropic 兼容 API（推荐），或使用 /v1 端点为 OpenAI 兼容 API",
             ja: "/anthropic で Anthropic 互換 API（推奨）、または /v1 で OpenAI 互換 API を使用",
@@ -241,6 +242,7 @@ const defs = {
         logo: "xiaomi",
         optionsOpen: true,
         baseUrlHint: {
+            tr: "Varsayılan adres kullandıkça öde anahtarlarıyla (sk-...) çalışır. Token Plan aboneleri (tp-... anahtarları) https://token-plan-cn.xiaomimimo.com/v1 adresini ayarlamalıdır",
             en: "Default works with pay-as-you-go keys (sk-...). Token Plan subscribers (tp-... keys) must set https://token-plan-cn.xiaomimimo.com/v1",
             zh: "默认地址适用于按量付费密钥（sk-...）。Token Plan 订阅用户（tp-... 密钥）请设置为 https://token-plan-cn.xiaomimimo.com/v1",
             ja: "デフォルトは従量課金キー（sk-...）用です。Token Plan 加入者（tp-... キー）は https://token-plan-cn.xiaomimimo.com/v1 を設定してください",
@@ -349,6 +351,7 @@ const defs = {
         ownRequestPath: true,
         icon: "cloud",
         note: {
+            tr: "AWS kimlik bilgileri",
             en: "AWS credentials",
             zh: "AWS 凭证",
             ja: "AWS 認証情報",
@@ -395,6 +398,7 @@ const defs = {
         ownRequestPath: true,
         logo: "google",
         note: {
+            tr: "Express modu anahtarı",
             en: "Express mode key",
             zh: "Express 模式 Key",
             ja: "Express モードのキー",
@@ -424,12 +428,14 @@ const defs = {
         ownRequestPath: true,
         optionsOpen: true,
         note: {
+            tr: "Anahtar ve kaynak adresi",
             en: "Key and resource URL",
             zh: "Key 和资源地址",
             ja: "キーとリソース URL",
             "zh-Hant": "Key 和資源位址",
         },
         baseUrlHint: {
+            tr: "Azure OpenAI kaynağınızın adresi, https://<kaynak>.openai.azure.com/openai biçiminde",
             en: "Your Azure OpenAI resource's URL, https://<resource>.openai.azure.com/openai",
             zh: "Azure OpenAI 资源的地址，形如 https://<资源名>.openai.azure.com/openai",
             ja: "Azure OpenAI リソースの URL。例: https://<リソース名>.openai.azure.com/openai",
@@ -459,6 +465,7 @@ const defs = {
         ownRequestPath: true,
         logo: "tencent-cloud",
         note: {
+            tr: "Anahtar gerekmez",
             en: "No key needed",
             zh: "不用 Key",
             ja: "キー不要",
@@ -481,6 +488,7 @@ const defs = {
         listNeedsNoKey: true,
         optionsOpen: true,
         note: {
+            tr: "Anahtar isteğe bağlı",
             en: "Key optional",
             zh: "Key 可不填",
             ja: "キーは任意",
@@ -500,6 +508,7 @@ const defs = {
         icon: "server",
         optionsOpen: true,
         note: {
+            tr: "Sunucunuzun adresi",
             en: "Your server's URL",
             zh: "填服务地址",
             ja: "サーバーの URL",
@@ -519,6 +528,7 @@ const defs = {
         icon: "server",
         optionsOpen: true,
         note: {
+            tr: "Adresiniz ve anahtarınız",
             en: "Your URL and key",
             zh: "填地址和 Key",
             ja: "URL とキー",

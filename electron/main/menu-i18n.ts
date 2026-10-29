@@ -31,6 +31,25 @@ type MenuTranslations = typeof en
 const translations: Record<MenuLocale, MenuTranslations> = {
     en,
 
+    tr: {
+        // File menu
+        file: "Dosya",
+
+        // Edit menu
+        edit: "Düzen",
+
+        // View menu
+        view: "Görünüm",
+
+        // Window menu
+        window: "Pencere",
+
+        // Help menu
+        help: "Yardım",
+        documentation: "Belgeler",
+        reportIssue: "Sorun bildir",
+    },
+
     zh: {
         // File menu
         file: "文件",
@@ -121,5 +140,6 @@ export function getPreferredLocale(appLocale: string): MenuLocale {
 
     if (language === "zh") return "zh"
     if (language === "ja") return "ja"
+    if (language === "tr") return "tr"
     return "en"
 }

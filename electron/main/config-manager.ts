@@ -2,7 +2,7 @@ import { app } from "electron"
 import * as fs from "fs"
 import * as path from "path"
 
-export const USER_LOCALES = ["en", "zh", "ja", "zh-Hant"] as const
+export const USER_LOCALES = ["tr", "en", "zh", "ja", "zh-Hant"] as const
 export type UserLocale = (typeof USER_LOCALES)[number]
 
 // Earlier versions kept their configuration presets in this file too; the

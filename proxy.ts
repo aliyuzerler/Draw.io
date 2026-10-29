@@ -1,43 +1,12 @@
-import { match as matchLocale } from "@formatjs/intl-localematcher"
-import Negotiator from "negotiator"
 import type { NextRequest } from "next/server"
 import { NextResponse } from "next/server"
 import { i18n } from "./lib/i18n/config"
 
-// Taiwan, Hong Kong and Macau write Traditional Chinese
-const TRADITIONAL_CHINESE = /^zh-(hant|tw|hk|mo)\b/i
-
-function getLocale(request: NextRequest): string {
-    // Negotiator expects plain object so we need to transform headers
-    const negotiatorHeaders: Record<string, string> = {}
-    request.headers.forEach((value, key) => {
-        negotiatorHeaders[key] = value
-    })
-
-    // @ts-expect-error locales are readonly
-    const locales: string[] = i18n.locales
-
-    // The browser's languages in order of preference. Negotiator would match
-    // zh-TW to zh if given the locales, so map Traditional Chinese first and
-    // let intl-localematcher pick the locale.
-    const languages = new Negotiator({ headers: negotiatorHeaders })
-        .languages()
-        .filter(isLanguageTag)
-        .map((language) =>
-            TRADITIONAL_CHINESE.test(language) ? "zh-Hant" : language,
-        )
-
-    return matchLocale(languages, locales, i18n.defaultLocale)
-}
-
-// intl-localematcher throws on a malformed tag, and "*" is not a tag
-function isLanguageTag(language: string): boolean {
-    try {
-        Intl.getCanonicalLocales(language)
-        return true
-    } catch {
-        return false
-    }
+function getLocale(_request: NextRequest): string {
+    // Turkish-first: every visitor landing on a path without a locale goes
+    // to the default (Turkish) page. Other languages stay reachable through
+    // /en, /ja ... and the language menus.
+    return i18n.defaultLocale
 }
 
 export function proxy(request: NextRequest) {

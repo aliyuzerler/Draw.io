@@ -47,6 +47,7 @@ import {
 import { type SettingsTab, useUiStore } from "@/stores/ui-store"
 
 const LANGUAGE_LABELS: Record<Locale, string> = {
+    tr: "Türkçe",
     en: "English",
     zh: "中文",
     ja: "日本語",
@@ -547,7 +548,7 @@ function AboutTab() {
             )}
             <div className="flex flex-wrap gap-2">
                 <a
-                    href="https://github.com/DayuanJiang/next-ai-draw-io"
+                    href="https://github.com/aliyuzerler/Draw.io"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border px-3 text-xs text-muted-foreground hover:text-foreground"

@@ -20,6 +20,9 @@ describe("resolveDocLink", () => {
         expect(
             resolveDocLink("./editor.md", "docs/tw/versions.md", "zh-Hant"),
         ).toBe("/zh-Hant/docs/editor")
+        expect(resolveDocLink("./editor.md", "docs/tr/versions.md", "tr")).toBe(
+            "/tr/docs/editor",
+        )
     })
 
     it("sends other repository files to GitHub", () => {
@@ -30,7 +33,7 @@ describe("resolveDocLink", () => {
                 "en",
             ),
         ).toBe(
-            "https://github.com/DayuanJiang/next-ai-draw-io/blob/main/packages/mcp-server/README.md#configuration",
+            "https://github.com/aliyuzerler/Draw.io/blob/main/packages/mcp-server/README.md#configuration",
         )
     })
 
@@ -96,6 +99,7 @@ describe("docs files", () => {
             expect(loadDoc("zh", file).locale).toBe("zh")
             expect(loadDoc("ja", file).locale).toBe("ja")
             expect(loadDoc("zh-Hant", file).locale).toBe("zh-Hant")
+            expect(loadDoc("tr", file).locale).toBe("tr")
         }
     })
 })

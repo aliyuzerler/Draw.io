@@ -17,6 +17,48 @@ export type GalleryPageTexts = {
 
 // The quoted prompt fragments stay in English, as the prompts do
 export const TEXTS: Record<Locale, GalleryPageTexts> = {
+    tr: {
+        title: "Galeri: örnek diyagramlar ve istemleri",
+        description:
+            "Next AI Draw.io'da AI'ın tek bir istemden çizdiği diyagramlar: AWS, Azure, Google Cloud ve Kubernetes mimarileri, ER, UML ve oturum diyagramları, BPMN, swimlane'ler, Gantt grafikleri, zihin haritaları ve daha fazlası. Bir istemi kopyalayın veya editörde deneyin.",
+        keywords: [
+            "draw.io örnekleri",
+            "AI diyagram örnekleri",
+            "diyagram istemleri",
+            "AWS mimari diyagramı örneği",
+            "ER diyagramı örneği",
+            "oturum diyagramı örneği",
+            "BPMN örneği",
+        ],
+        h1: "Örnek diyagramlar ve arkasındaki istemler",
+        lede: "Buradaki her diyagram tek bir istemden çıktı. Birini büyütmek için açın, istemini kopyalayın ya da istem sohbet kutusuna hazır şekilde editörü açıp göndermeden önce üzerinde değişiklik yapın.",
+        note: "Her diyagram, Claude Code tarafından MCP sunucusu üzerinden çizildi; kullanılan model kartında yazıyor. Sunucunun isteği üzerine Claude Code her sonucun ekran görüntüsüne baktı ve örtüşmeleri düzeltti. Aynı istem her seferinde biraz farklı bir diyagram verir; diğer modeller de kendi tarzlarında çizer.",
+        tipsHeading: "Kendi istemini yaz",
+        tips: [
+            {
+                title: "Parçaları say",
+                text: "“customers, addresses, orders, order items, products, categories and payments”",
+            },
+            {
+                title: "Nasıl bağlandıklarını söyle",
+                text: "“the manager approves or rejects it, finance checks the receipts and pays”",
+            },
+            {
+                title: "Diyagram türünü belirt",
+                text: "ER diyagramı, oturum diyagramı, BPMN, swimlane, Gantt grafiği, müşteri yolculuğu haritası.",
+            },
+            {
+                title: "İkonları ismiyle iste",
+                text: "Önemliyse AWS, Azure, GCP, Kubernetes veya Cisco ikonlarını yazın.",
+            },
+        ],
+        more: "İstek yazma hakkında belgelerde şunlar da var:",
+        moreLinks: {
+            editor: "Çizme ve düzenleme",
+            aws: "AWS mimari diyagramları",
+            flowcharts: "Akış şemaları ve oturum diyagramları",
+        },
+    },
     en: {
         title: "Gallery: example diagrams and their prompts",
         description:

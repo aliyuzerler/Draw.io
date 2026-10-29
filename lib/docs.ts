@@ -13,6 +13,7 @@ import type { Locale } from "@/lib/i18n/config"
 // The folder of each language; a page missing in Traditional Chinese falls
 // back to the Simplified one
 const FOLDERS: Record<Locale, string[]> = {
+    tr: ["tr", "en"],
     en: ["en"],
     zh: ["cn", "en"],
     ja: ["ja", "en"],
@@ -20,6 +21,7 @@ const FOLDERS: Record<Locale, string[]> = {
 }
 
 const FOLDER_LOCALE: Record<string, Locale> = {
+    tr: "tr",
     en: "en",
     cn: "zh",
     ja: "ja",
@@ -29,6 +31,7 @@ const FOLDER_LOCALE: Record<string, Locale> = {
 export const DOCS_NAV: { group: Record<Locale, string>; files: string[] }[] = [
     {
         group: {
+            tr: "Başlangıç",
             en: "Getting started",
             zh: "入门",
             ja: "はじめに",
@@ -38,6 +41,7 @@ export const DOCS_NAV: { group: Record<Locale, string>; files: string[] }[] = [
     },
     {
         group: {
+            tr: "Editörü kullanma",
             en: "Using the editor",
             zh: "使用编辑器",
             ja: "エディタの使い方",
@@ -53,6 +57,7 @@ export const DOCS_NAV: { group: Record<Locale, string>; files: string[] }[] = [
     },
     {
         group: {
+            tr: "Kendi sunucunda barındırma",
             en: "Self-hosting",
             zh: "自行部署",
             ja: "セルフホスト",
@@ -67,7 +72,13 @@ export const DOCS_NAV: { group: Record<Locale, string>; files: string[] }[] = [
         ],
     },
     {
-        group: { en: "Help", zh: "帮助", ja: "ヘルプ", "zh-Hant": "說明" },
+        group: {
+            tr: "Yardım",
+            en: "Help",
+            zh: "帮助",
+            ja: "ヘルプ",
+            "zh-Hant": "說明",
+        },
         files: ["FAQ"],
     },
 ]
@@ -180,8 +191,8 @@ export class HeadingIds {
     }
 }
 
-const BLOB = "https://github.com/DayuanJiang/next-ai-draw-io/blob/main"
-const RAW = "https://raw.githubusercontent.com/DayuanJiang/next-ai-draw-io/main"
+const BLOB = "https://github.com/aliyuzerler/Draw.io/blob/main"
+const RAW = "https://raw.githubusercontent.com/aliyuzerler/Draw.io/main"
 
 /**
  * Where a link in a docs file goes on the site: another docs page, or the
@@ -206,7 +217,7 @@ export function resolveDocLink(
     if (image && target.startsWith("public/")) {
         return getAssetUrl(`/${target.slice("public/".length)}`)
     }
-    const docs = target.match(/^docs\/(?:en|cn|ja|tw)\/([^/]+)\.md$/)
+    const docs = target.match(/^docs\/(?:tr|en|cn|ja|tw)\/([^/]+)\.md$/)
     const file = docs && FILES.find((f) => f === docs[1])
     if (file) return `/${lang}${docsPath(file)}${hash ? `#${hash}` : ""}`
     return `${image ? RAW : BLOB}/${target}${hash ? `#${hash}` : ""}`

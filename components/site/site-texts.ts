@@ -1,6 +1,6 @@
 import type { Locale } from "@/lib/i18n/config"
 
-export const GITHUB_URL = "https://github.com/DayuanJiang/next-ai-draw-io"
+export const GITHUB_URL = "https://github.com/aliyuzerler/Draw.io"
 export const RELEASES_URL = `${GITHUB_URL}/releases/latest`
 export const NPM_URL =
     "https://www.npmjs.com/package/@next-ai-drawio/mcp-server"
@@ -23,6 +23,7 @@ export const MCP_CURSOR_INSTALL_URL = `https://cursor.com/en/install-mcp?name=dr
 
 // Each language's name in itself, for the language links
 export const LANGUAGE_NAMES: Record<Locale, string> = {
+    tr: "Türkçe",
     en: "English",
     zh: "简体中文",
     ja: "日本語",
@@ -62,6 +63,37 @@ export type SiteTexts = {
 }
 
 export const SITE_TEXTS: Record<Locale, SiteTexts> = {
+    tr: {
+        nav: {
+            docs: "Belgeler",
+            mcp: "MCP sunucusu",
+            gallery: "Galeri",
+            openEditor: "Editörü aç",
+            language: "Dil",
+            menu: "Menü",
+            pages: "Tüm sayfalar",
+        },
+        copy: { copy: "Komutu kopyala", copied: "Kopyalandı" },
+        footer: {
+            tagline:
+                "AI ile sohbet ederek draw.io diyagramları çizin ve düzenleyin.",
+            product: "Ürün",
+            editor: "Editör",
+            desktop: "Masaüstü uygulaması",
+            mcp: "MCP sunucusu",
+            docs: "Belgeler",
+            project: "Proje",
+            github: "GitHub",
+            npm: "npm paketi",
+            issues: "Sorun bildir",
+            support: "Destek",
+            sponsor: "Sponsor ol",
+            sponsorText:
+                "Bu proje işinize yarıyorsa, sponsorluğunuz canlı demoyu ayakta tutar.",
+            contact: "İletişim: me[at]jiang.jp",
+            license: "Apache-2.0 lisansıyla açık kaynaktır.",
+        },
+    },
     en: {
         nav: {
             docs: "Docs",

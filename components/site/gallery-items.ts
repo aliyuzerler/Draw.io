@@ -32,6 +32,7 @@ export const GALLERY_CATEGORIES: {
     {
         id: "cloud",
         label: {
+            tr: "Bulut ve altyapı",
             en: "Cloud and infrastructure",
             zh: "云与基础设施",
             ja: "クラウドとインフラ",
@@ -41,6 +42,7 @@ export const GALLERY_CATEGORIES: {
     {
         id: "software",
         label: {
+            tr: "Yazılım tasarımı",
             en: "Software design",
             zh: "软件设计",
             ja: "ソフトウェア設計",
@@ -50,6 +52,7 @@ export const GALLERY_CATEGORIES: {
     {
         id: "process",
         label: {
+            tr: "Süreçler",
             en: "Processes",
             zh: "流程",
             ja: "業務フロー",
@@ -59,6 +62,7 @@ export const GALLERY_CATEGORIES: {
     {
         id: "business",
         label: {
+            tr: "Planlama ve iş",
             en: "Planning and business",
             zh: "规划与业务",
             ja: "計画とビジネス",
@@ -68,6 +72,7 @@ export const GALLERY_CATEGORIES: {
     {
         id: "ai",
         label: {
+            tr: "AI ve araştırma",
             en: "AI and research",
             zh: "AI 与研究",
             ja: "AI と研究",
@@ -77,6 +82,7 @@ export const GALLERY_CATEGORIES: {
     {
         id: "drawing",
         label: {
+            tr: "Çizimler",
             en: "Drawings",
             zh: "绘画",
             ja: "イラスト",
@@ -94,6 +100,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Draw a Kubernetes deployment for a web shop: an ingress, web and API deployments with their services and pods, a Redis StatefulSet with a persistent volume, a ConfigMap, a Secret, and an autoscaler on the API.",
         title: {
+            tr: "Bir web mağazası için Kubernetes dağıtımı",
             en: "Kubernetes deployment for a web shop",
             zh: "网店的 Kubernetes 部署",
             ja: "Web ショップの Kubernetes デプロイ",
@@ -107,6 +114,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Draw an ER diagram for an online shop: customers, addresses, orders, order items, products, categories and payments, with primary and foreign keys and the cardinality of each relationship.",
         title: {
+            tr: "Çevrimiçi mağazanın ER diyagramı",
             en: "ER diagram of an online shop",
             zh: "网店的 ER 图",
             ja: "オンラインショップの ER 図",
@@ -120,6 +128,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Give me an animated connector diagram of transformer's architecture.",
         title: {
+            tr: "Animasyonlu bağlayıcılarla Transformer mimarisi",
             en: "Transformer architecture with animated connectors",
             zh: "带动画连线的 Transformer 架构",
             ja: "アニメーション付きの Transformer 構成",
@@ -133,6 +142,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Draw a BPMN process for an expense claim: an employee submits it, the manager approves or rejects it, finance checks the receipts and pays, and the claim goes back to the employee when receipts are missing.",
         title: {
+            tr: "BPMN masraf bildirme süreci",
             en: "BPMN expense claim process",
             zh: "BPMN 报销流程",
             ja: "BPMN の経費精算プロセス",
@@ -146,6 +156,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Draw an AWS architecture for a highly available web app across two Availability Zones with AWS icons: Route 53, CloudFront with AWS WAF, an Application Load Balancer, ECS Fargate services in private subnets, Aurora PostgreSQL with a writer and a reader, ElastiCache for Redis, S3 for static assets, NAT gateways, and CloudWatch for monitoring.",
         title: {
+            tr: "AWS üzerinde yüksek erişilebilirlikli web uygulaması",
             en: "Highly available web app on AWS",
             zh: "AWS 上的高可用 Web 应用",
             ja: "AWS の高可用性 Web アプリ",
@@ -159,6 +170,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Draw a mind map for planning a product launch: goals, audience, messaging, channels, timeline, budget and metrics, each with a few ideas.",
         title: {
+            tr: "Ürün lansmanı zihin haritası",
             en: "Product launch mind map",
             zh: "产品发布思维导图",
             ja: "製品ローンチのマインドマップ",
@@ -172,6 +184,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Draw a sequence diagram of an OAuth 2.0 login with PKCE between the user, a browser app, the identity provider and an API.",
         title: {
+            tr: "PKCE ile OAuth 2.0 girişi",
             en: "OAuth 2.0 login with PKCE",
             zh: "OAuth 2.0 PKCE 登录时序图",
             ja: "OAuth 2.0 PKCE ログインのシーケンス図",
@@ -185,6 +198,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Draw a customer journey map for a mobile banking app across five stages (discover, sign up, first payment, everyday use, get help), with the customer's actions, touchpoints, feelings and pain points in each stage, and an opportunity for each pain point.",
         title: {
+            tr: "Bir bankacılık uygulamasının müşteri yolculuğu haritası",
             en: "Customer journey map of a banking app",
             zh: "手机银行的用户旅程地图",
             ja: "モバイルバンキングのカスタマージャーニーマップ",
@@ -198,6 +212,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Draw an org chart for a 25-person startup: the CEO, a CTO with two engineering teams, a head of product with designers, a head of sales with account executives, and operations.",
         title: {
+            tr: "Bir girişimin organizasyon şeması",
             en: "Org chart of a startup",
             zh: "创业公司组织架构图",
             ja: "スタートアップの組織図",
@@ -211,6 +226,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Generate a RAG architecture diagram for chat application. Use connected diagram for data ingestion",
         title: {
+            tr: "Sohbet uygulaması için RAG mimarisi",
             en: "RAG for a chat application",
             zh: "聊天应用的 RAG 架构",
             ja: "チャットアプリの RAG 構成",
@@ -224,6 +240,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Draw a Google Cloud analytics pipeline with GCP icons: apps send events to Pub/Sub, Dataflow processes the stream, raw data lands in Cloud Storage, BigQuery is the warehouse, Vertex AI trains a model on it, Looker shows dashboards, and Cloud Composer runs the nightly batch jobs.",
         title: {
+            tr: "Google Cloud üzerinde veri analizi hattı",
             en: "Analytics pipeline on Google Cloud",
             zh: "Google Cloud 上的数据分析流水线",
             ja: "Google Cloud のデータ分析パイプライン",
@@ -237,6 +254,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Draw a swimlane diagram of a hiring process across the candidate, the recruiter, the hiring manager and the interview panel, from application to offer.",
         title: {
+            tr: "Swimlane'lerle işe alım süreci",
             en: "Hiring process in swimlanes",
             zh: "招聘流程泳道图",
             ja: "採用プロセスのスイムレーン図",
@@ -250,6 +268,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Draw a UML class diagram for a library system: Book, Copy, Member, Loan, Reservation, Librarian and Fine, with their main attributes, methods and the relationships between them.",
         title: {
+            tr: "Kütüphane sisteminin UML sınıf diyagramı",
             en: "UML class diagram of a library",
             zh: "图书馆系统的 UML 类图",
             ja: "図書館システムの UML クラス図",
@@ -263,6 +282,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Draw a Gantt chart for a 12-week mobile app launch: discovery, design, three development sprints, beta testing, app store review and launch, with milestones.",
         title: {
+            tr: "12 haftalık uygulama lansman planı",
             en: "12-week app launch plan",
             zh: "12 周应用发布计划",
             ja: "12 週間のアプリ公開計画",
@@ -276,6 +296,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Draw an Azure architecture for a web app that runs in two regions, with Azure icons: Azure Front Door, App Service in each region, Azure SQL Database with geo-replication, Azure Cache for Redis, Blob Storage, Key Vault, sign-in with Microsoft Entra ID, and Application Insights.",
         title: {
+            tr: "İki Azure bölgesinde web uygulaması",
             en: "Web app in two Azure regions",
             zh: "跨两个 Azure 区域的 Web 应用",
             ja: "2 つの Azure リージョンで動く Web アプリ",
@@ -289,6 +310,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Draw a CI/CD pipeline with GitHub Actions: on a pull request run lint, unit tests and a security scan in parallel, build a Docker image, deploy to staging, wait for approval, then deploy to production on AWS, with a rollback path.",
         title: {
+            tr: "GitHub Actions ile CI/CD",
             en: "CI/CD with GitHub Actions",
             zh: "GitHub Actions 的 CI/CD 流水线",
             ja: "GitHub Actions の CI/CD パイプライン",
@@ -302,6 +324,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Draw a state machine for an e-commerce order: created, payment pending, paid, packed, shipped, delivered, cancelled, refund requested and refunded, with the events between them.",
         title: {
+            tr: "Sipariş durum makinesi",
             en: "Order state machine",
             zh: "订单状态机",
             ja: "注文の状態遷移図",
@@ -315,6 +338,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Draw a network diagram of a small office with Cisco icons: the internet, a firewall, a router, a core switch, Wi-Fi access points, laptops, a file server, a printer and a separate guest VLAN.",
         title: {
+            tr: "Küçük ofis ağı",
             en: "Small office network",
             zh: "小型办公室网络",
             ja: "小規模オフィスのネットワーク",
@@ -328,6 +352,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Give me an animated architecture diagram of the ResNet50 model.",
         title: {
+            tr: "ResNet50 model mimarisi",
             en: "ResNet50 model architecture",
             zh: "ResNet50 模型架构",
             ja: "ResNet50 のモデル構成",
@@ -341,6 +366,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Generate agile scrum workflow diagram for software development team.",
         title: {
+            tr: "Çevik Scrum iş akışı",
             en: "Agile Scrum workflow",
             zh: "敏捷 Scrum 工作流程",
             ja: "アジャイル Scrum のワークフロー",
@@ -354,6 +380,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Generate authentication process using React with AWS. Use Serverless architecture.",
         title: {
+            tr: "React ve AWS ile sunucusuz giriş",
             en: "Serverless sign-in with React and AWS",
             zh: "React 与 AWS 的无服务器登录",
             ja: "React と AWS のサーバーレス認証",
@@ -368,6 +395,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         prompt: "Summarize this paper as a diagram",
         attachment: "file",
         title: {
+            tr: "Diyagram halinde bir araştırma makalesi",
             en: "A research paper as a diagram",
             zh: "把论文画成图",
             ja: "論文を図にまとめる",
@@ -381,6 +409,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
         model: "Claude Opus 5.5",
         prompt: "Draw a cute cat for me.",
         title: {
+            tr: "Şekillerle çizilmiş bir kedi",
             en: "A cat drawn with shapes",
             zh: "用图形画的小猫",
             ja: "図形で描いた猫",
@@ -401,6 +430,16 @@ export type GalleryTexts = {
 }
 
 export const GALLERY_TEXTS: Record<Locale, GalleryTexts> = {
+    tr: {
+        all: "Tümü",
+        prompt: "İstem",
+        tryPrompt: "Bu istemi dene",
+        copy: "İstemi kopyala",
+        copied: "Kopyalandı",
+        fromFile: "Makale dosya olarak ekli",
+        enlarge: "Büyüt",
+        close: "Kapat",
+    },
     en: {
         all: "All",
         prompt: "Prompt",

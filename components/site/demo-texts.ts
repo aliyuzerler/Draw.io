@@ -10,6 +10,32 @@ const TEXTS: Record<
     Locale,
     Pick<DemoTexts, "replay" | "steps" | "prompts" | "replies">
 > = {
+    tr: {
+        replay: "Yeniden oynat",
+        steps: [
+            { title: "Oluştur", text: "AI, tarif ettiğini çizer" },
+            {
+                title: "Elle düzenle",
+                text: "draw.io'daki gibi şekilleri sürükle",
+            },
+            {
+                title: "AI ile düzenle",
+                text: "Bir şekli seç, değişiklik iste",
+            },
+            {
+                title: "Sürüm geçmişi",
+                text: "Önceki herhangi bir sürüme dön",
+            },
+        ],
+        prompts: {
+            draw: "AWS üzerinde sunucusuz bir REST API çiz",
+            cache: "Bunun önüne bir önbellek ekle",
+        },
+        replies: {
+            draw: "Sunucusuz bir REST API: Lambda'nın önünde API Gateway, girişte Cognito, veride DynamoDB ve dosyalarda S3.",
+            cache: "Okumalar için Lambda ile DynamoDB arasına ElastiCache ekledim; S3'i taşıdığınız yerde bıraktım.",
+        },
+    },
     en: {
         replay: "Replay",
         steps: [
@@ -134,6 +160,10 @@ export async function demoTexts(lang: Locale): Promise<DemoTexts> {
 
 // The flowchart demo's request and answer
 const FLOWCHART_TEXTS: Record<Locale, { prompt: string; reply: string }> = {
+    tr: {
+        prompt: "Bir iade talebi için akış şeması çiz: 30 günden eski siparişler reddedilsin, aksi halde iade yapılıp müşteriye e-posta gönderilsin",
+        reply: "Soldan sağa bir iade akışı: destek siparişi kontrol eder, sipariş yaşına göre karar verilir, sonra reddedilir ya da iade yapılıp müşteriye e-posta gönderilir.",
+    },
     en: {
         prompt: "Draw a flowchart for a refund request: reject orders older than 30 days, otherwise refund and email the customer",
         reply: "A refund flow from left to right: support checks the order, a decision on its age, then a rejection, or a refund and an email to the customer.",
@@ -154,6 +184,11 @@ const FLOWCHART_TEXTS: Record<Locale, { prompt: string; reply: string }> = {
 
 // The MCP demo's request and the agent's words; tool names stay in English
 const MCP_TEXTS: Record<Locale, Omit<McpDemoTexts, "replay">> = {
+    tr: {
+        prompt: "Bu depoyu oku ve mimarisini çiz",
+        intro: "Önce projeyi okuyacağım, sonra çizeceğim.",
+        done: "Mimari önizlemede: API Gateway Lambda'yı çağırıyor, Cognito girişi hallediyor, DynamoDB verileri ve S3 dosyaları tutuyor.",
+    },
     en: {
         prompt: "Read this repo and draw its architecture",
         intro: "I'll read the project first, then draw it.",

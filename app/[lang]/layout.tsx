@@ -52,6 +52,7 @@ export async function generateMetadata({
     const lang: Locale = hasLocale(rawLang) ? rawLang : i18n.defaultLocale
 
     const titles: Record<Locale, string> = {
+        tr: "Next AI Draw.io - AI Destekli Diyagram Oluşturucu",
         en: "Next AI Draw.io - AI-Powered Diagram Generator",
         zh: "Next AI Draw.io - AI 驱动的图表生成器",
         ja: "Next AI Draw.io - AI 搭載ダイアグラム生成ツール",
@@ -59,6 +60,7 @@ export async function generateMetadata({
     }
 
     const descriptions: Record<Locale, string> = {
+        tr: "AI ile AWS mimari diyagramları, akış şemaları ve teknik diyagramlar oluşturun. Profesyonel diyagram oluşturma için draw.io'yu AI desteğiyle birleştiren ücretsiz çevrimiçi araç.",
         en: "Create AWS architecture diagrams, flowcharts, and technical diagrams using AI. Free online tool integrating draw.io with AI assistance for professional diagram creation.",
         zh: "使用 AI 创建 AWS 架构图、流程图和技术图表。免费在线工具，整合 draw.io 与 AI 辅助，轻松创建专业图表。",
         ja: "AI で AWS アーキテクチャ図、フローチャート、技術図を作成。draw.io と AI アシスタントを統合した無料オンラインツールで、プロ品質の図を簡単に作成できます。",
@@ -145,7 +147,7 @@ export default async function RootLayout({
             "Draw and edit draw.io diagrams by chatting with an AI: AWS, Azure and GCP architecture diagrams, flowcharts and other technical diagrams on a real draw.io canvas. Every AI change is a version you can compare or restore, and it works with many AI providers. Also available as a desktop app and an MCP server for AI agents.",
         url: SITE_URL,
         sameAs: [
-            "https://github.com/DayuanJiang/next-ai-draw-io",
+            "https://github.com/aliyuzerler/Draw.io",
             "https://www.npmjs.com/package/@next-ai-drawio/mcp-server",
         ],
         inLanguage: validLang,

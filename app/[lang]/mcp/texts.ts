@@ -51,9 +51,138 @@ export type McpTexts = {
 }
 
 const README =
-    "https://raw.githubusercontent.com/DayuanJiang/next-ai-draw-io/main/packages/mcp-server/README.md"
+    "https://raw.githubusercontent.com/aliyuzerler/Draw.io/main/packages/mcp-server/README.md"
 
 export const TEXTS: Record<Locale, McpTexts> = {
+    tr: {
+        title: "Claude Code, Cursor, Codex ve VS Code için draw.io MCP sunucusu",
+        description:
+            "Claude Code, Cursor, Codex, VS Code ve diğer AI ajanlarının, projenizin dosyalarından tarayıcınızdaki canlı bir tuvale draw.io diyagramları çizmesini sağlayan MCP sunucusu. Dilediğiniz an elle düzenleyin; AI'ın her değişikliği çerçevelenir ve geri alınabilir.",
+        keywords: [
+            "draw.io MCP sunucusu",
+            "drawio MCP",
+            "Claude Code diyagram",
+            "Cursor MCP diyagram",
+            "koddan mimari diyagram",
+            "MCP sunucusu",
+        ],
+        h1: "Claude Code, Cursor, Codex ve VS Code için draw.io MCP sunucusu",
+        lede: "AI ajanınız projenizin dosyalarını okur ve diyagramı tarayıcınızdaki canlı bir draw.io tuvaline çizer. Dilediğiniz an elle düzenleyin: ajan, tekrar düzenlemeden önce değişikliklerinizi okur.",
+        otherClients: "Diğer istemcilere kurulum",
+        npm: "npm paketi",
+        video: "MCP sunucusu bir kod tabanından diyagram çiziyor",
+        installHeading: "Kurulum",
+        tabs: {
+            claude: "Claude Code",
+            codex: "Codex CLI",
+            vscode: "VS Code",
+            others: "Cursor ve diğerleri",
+            agent: "Ajanınıza söyleyin",
+        },
+        oneClick: { vscode: "VS Code'a yükle", cursor: "Cursor'a ekle" },
+        notes: {
+            claudeScope:
+                "`--scope user` araçları her projede kullanılabilir kılar. Eklemezseniz yalnızca komutu çalıştırdığınız klasörde var olurlar.",
+            claudePlugin:
+                "Ya da Claude Code topluluk mağazasından eklenti olarak kurun (Claude Code 2.1.275 veya üstü):",
+            codexApproval:
+                'Codex, diyagramı değiştiren her drawio aracından önce sorar; tam erişimsiz `codex exec` "MCP tool call requires approval" hatası verir. drawio araçlarının sormadan çalışması için `~/.codex/config.toml` içinde bu sunucunun bölümüne bir satır ekleyin:',
+            codexSome:
+                'Yalnızca bazı araçlara izin vermek için bunun yerine `[mcp_servers.drawio.tools.<araç adı>]` ile `approval_mode = "approve"` kullanın.',
+            vscode: "Ya da `.vscode/mcp.json` içine yazın:",
+            others: "Ya da `~/.cursor/mcp.json`, `claude_desktop_config.json`, `cline_mcp_settings.json` veya istemcinizin MCP yapılandırmasına yazın:",
+            agent: "Şunu Claude Code, Codex, Cursor, VS Code, Cline veya dosya düzenleyip komut çalıştırabilen herhangi bir ajana yapıştırın:",
+        },
+        agentPrompt: `Şu anda içinde olduğun istemci için, ${README}
+adresini izleyerek drawio MCP sunucusunu kur.
+Tüm projelerim için kur (kullanıcı kapsamı, Claude Code'da "--scope user"),
+sunucunun adı "drawio" olsun ve hâlihazırda yapılandırılmış sunucuları koru.
+Ardından araçlarının görünmesi için nasıl yeniden yükleme yapacağımı söyle.`,
+        afterInstall:
+            'İstemciyi yeniden başlatın, sonra örneğin "Bu depoyu oku ve mimarisini çiz" diye sorun. Önizleme tarayıcınızda açılır ve diyagram çizildikçe belirir.',
+        featuresHeading: "Ne yapar",
+        features: [
+            {
+                title: "Projenizden çizer",
+                text: "Ajan, kodunuzu ve belgelerinizi kendi araçlarıyla okur. Mevcut `.drawio` ve `.drawio.svg` dosyaları da açılır.",
+            },
+            {
+                title: "Her değişiklik bir sürümdür",
+                text: "AI'ın değişiklikleri birkaç saniye çerçevelenir ve tek Ctrl+Z geri alır. Son 20 sürüm tuvalin yanında durur; geri yükleyin veya karşılaştırın.",
+            },
+            {
+                title: "Tuvali AI ile paylaşırsınız",
+                text: 'Dilediğiniz an elle düzenleyin veya şekilleri seçip "bunlar" deyin. AI, tekrar düzenlemeden önce değişikliklerinizi okur.',
+            },
+            {
+                title: "Gerçek ikonlar",
+                text: "Web uygulamasının çizim kuralları ve AWS, Azure, GCP, Kubernetes, Cisco ve daha fazlası için şekil kitaplıkları sayesinde AI gerçek ikon adlarını kullanır.",
+            },
+            {
+                title: "Kendi işini kontrol eder",
+                text: "AI, işlenmiş diyagramın ekran görüntüsüne bakıp örtüşen şekilleri düzeltebilir.",
+            },
+            {
+                title: "Dışa aktarma, çevrimdışı ve kayıt",
+                text: "`.drawio`, `.png`, `.svg` veya `.drawio.svg` olarak kaydedin. draw.io editörü paketin içindedir ve çevrimdışı çalışır; her diyagram sonraki bir sohbet için saklanır.",
+            },
+        ],
+        compareHeading: "draw.io MCP sunucusu seçimi",
+        compareIntro:
+            "draw.io diyagramı çizen birkaç MCP sunucusu var. Ekim 2026 itibarıyla farkları şöyle:",
+        compareColumns: [
+            "Sunucu",
+            "Diyagramı nasıl görür ve değiştirirsiniz",
+            "Ne zaman uygun",
+        ],
+        compareRows: [
+            {
+                server: "Bu sunucu, `@next-ai-drawio/mcp-server`",
+                how: "Tarayıcınızda canlı bir draw.io tuvali. AI onu geri okur; elle düzenlemeleriniz ve seçiminiz dahil. Değişiklikleri çerçevelenir, Ctrl+Z geri alır, önceki sürümler geri yüklenebilir",
+                fit: "Siz ve AI aynı diyagramda sırayla çalışırken",
+            },
+            {
+                server: "draw.io'nun resmi `@drawio/mcp` sunucusu",
+                how: "XML, CSV veya Mermaid'den ürettiği diyagramı yeni sekmede draw.io editöründe açar; onu geri okuyan araç yoktur",
+                fit: "Diyagramı tam draw.io editöründe kendiniz düzenlemek istediğinizde",
+            },
+            {
+                server: "draw.io'nun barındırdığı MCP uygulaması, `https://mcp.draw.io/mcp`",
+                how: "Diyagramı Claude.ai, ChatGPT, VS Code veya Cursor'da sohbetin içinde gösterir; kurulacak bir şey yoktur; diyagram draw.io'nun sunucusuna gönderilir",
+                fit: "Bir sohbet uygulamasında çalışıyorsanız ve diyagramı konuşmanın içinde görmek istiyorsanız",
+            },
+            {
+                server: "draw.io'nun Claude Code, Codex CLI ve Copilot CLI eklentisi",
+                how: "`.drawio` dosyaları yazan bir beceridir; PNG, SVG ve PDF dışa aktarma draw.io Desktop gerektirir",
+                fit: "MCP sunucusu olmadan deponuzda diyagram dosyaları istediğinizde",
+            },
+            {
+                server: "`lgazo/drawio-mcp-server`",
+                how: "localhost'ta bir draw.io editörü veya tarayıcı eklentisiyle kendi draw.io'nuz; araçlar tek tek şekil, katman ve sayfa oluşturur, okur, günceller ve siler",
+                fit: "İnce taneli araçlar, aynı anda birden çok belge veya Mermaid içe aktarma istediğinizde",
+            },
+        ],
+        toolsHeading: "Araçlar",
+        toolsColumns: ["Araç", "Ne yapar"],
+        tools: [
+            "Önizlemeyi açar ve çizim rehberini döndürür; `session_id` kayıtlı bir diyagrama devam ettirir",
+            "`mxCell` XML'inden yeni bir diyagram çizer",
+            "Kimlik (id) ile hücre ekler, günceller veya siler; ya hep ya hiç",
+            "Tarayıcıdaki düzenlemeleriniz de dahil olmak üzere güncel XML",
+            "Önizlemede seçtiğiniz şekiller",
+            "AI'ın kontrol etmesi için bir sayfanın PNG'si",
+            "`.drawio` veya `.drawio.svg` dosyası açar; `.drawio`, `.png`, `.svg` veya `.drawio.svg` olarak kaydeder",
+            "Önceki bir sürüme döner; yeniden yapmak da mümkündür",
+            "Önceki oturumların kaydettiği diyagramlar, en yeniden başlayarak",
+            "Çizim kurallarını yeniden verir; `aws4` gibi bir kitaplığın ikon stillerini verir",
+            "Sayfalar (sekmeler)",
+        ],
+        moreHeading: "Yapılandırma ve sorun giderme",
+        moreText:
+            "Ortam değişkenleri, kendi çizim kurallarınız, kendi sunucunuzdaki draw.io ve sık karşılaşılan sorunların çözümleri belgelerde ve README'de.",
+        moreDocs: "Claude Code'dan kullan",
+        moreReadme: "MCP sunucusu README",
+    },
     en: {
         title: "draw.io MCP server for Claude Code, Cursor, Codex and VS Code",
         description:

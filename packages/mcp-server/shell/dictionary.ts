@@ -2,12 +2,14 @@ import { i18n, type Locale } from "@/lib/i18n/config"
 import type { Dictionary } from "@/lib/i18n/dictionaries"
 import en from "@/lib/i18n/dictionaries/en.json"
 import ja from "@/lib/i18n/dictionaries/ja.json"
+import tr from "@/lib/i18n/dictionaries/tr.json"
 import zh from "@/lib/i18n/dictionaries/zh.json"
 import zhHant from "@/lib/i18n/dictionaries/zh-Hant.json"
 
 // The web app loads one dictionary on the server (lib/i18n/dictionaries.ts
-// is server-only); the shell ships all four and picks in the browser
+// is server-only); the shell ships all five and picks in the browser
 const DICTIONARIES: Record<Locale, Dictionary> = {
+    tr,
     en,
     zh,
     ja,
@@ -23,6 +25,7 @@ export function matchLocale(tag: string): Locale | null {
     if (base === "zh") return "zh"
     if (base === "ja") return "ja"
     if (base === "en") return "en"
+    if (base === "tr") return "tr"
     return null
 }
 

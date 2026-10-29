@@ -34,6 +34,79 @@ export type LandingTexts = {
 }
 
 export const TEXTS: Record<Locale, LandingTexts> = {
+    tr: {
+        title: "Next AI Draw.io: AI ile sohbet ederek draw.io diyagramları çizin",
+        description:
+            "Diyagramınızı tarif edin, AI gerçek bir draw.io tuvaline çizsin: AWS, Azure ve GCP mimari diyagramları, akış şemaları ve daha fazlası. Elle düzenleyin, AI'dan değişiklik isteyin ve herhangi birini geri alın. Ücretsiz ve açık kaynak; ayrıca masaüstü uygulaması ve MCP sunucusu olarak da mevcut.",
+        keywords: [
+            "AI diyagram oluşturucu",
+            "draw.io AI",
+            "AWS mimari diyagramı",
+            "akış şeması oluşturucu",
+            "draw.io MCP sunucusu",
+            "metinden diyagram",
+        ],
+        h1: "AI ile sohbet ederek draw.io diyagramları çizin ve düzenleyin",
+        lede: "Diyagramınızı tarif edin, AI gerçek bir draw.io tuvaline çizsin. Yaptığı her değişiklik çerçevelenir ve geri yükleyebileceğiniz bir sürüm olarak kaydedilir.",
+        primary: "Editörü aç",
+        phonePrimary: "Belgeleri oku",
+        secondary: "Claude Code'dan kullan",
+        waysHeading: "Üç kullanım yolu",
+        ways: {
+            browser: {
+                title: "Tarayıcıda",
+                text: "Kurulum gerekmez. Kendi API anahtarınızı ekleyerek demo günlük sınırını kaldırın.",
+                action: "Editörü aç",
+            },
+            desktop: {
+                title: "Masaüstünde",
+                text: "Aynı uygulama; Windows, macOS ve Linux için.",
+                action: "Son sürümü indir",
+            },
+            agent: {
+                title: "AI ajanınızda",
+                text: "Claude Code, Cursor, Codex ve VS Code, projenizin dosyalarından aynı tuvale çizer.",
+                action: "Diğer istemciler ve ayrıntılar",
+            },
+        },
+        examplesHeading: "Örnekler",
+        examplesIntro: "İstemler ve AI'ın onlardan çizdiği diyagramlar.",
+        examplesMore: "Tüm örnekleri galeride gör",
+        promptLabel: "İstem:",
+        modelLabel: "Model:",
+        moreHeading: "Editörde ayrıca",
+        more: [
+            {
+                title: "Bir görselden başla",
+                text: "Ekran görüntüsü, beyaz tahta fotoğrafı, PDF veya web sayfası yükleyin; AI onu düzenleyebileceğiniz bir diyagram olarak yeniden çizer.",
+            },
+            {
+                title: "Gerçek bulut ikonları",
+                text: "AWS, Azure, GCP, Kubernetes, Cisco ve daha fazlası için şekil kitaplıkları sayesinde mimari diyagramlar resmi ikonları kullanır.",
+            },
+            {
+                title: "Animasyonlu bağlayıcılar",
+                text: "Bağlayıcılar akışın yönünü gösterebilir; veri hatları ve istek yolları için idealdir.",
+            },
+            {
+                title: "Sürümleri karşılaştır",
+                text: "Herhangi bir sürümü tuvalin yanında açıp ne değiştiğini görün; sonra geri yükleyin ya da devam edin.",
+            },
+            {
+                title: "draw.io'da kullanmaya devam et",
+                text: ".drawio dosyası olarak kaydedip draw.io'da düzenlemeye devam edin, ya da PNG ve SVG dışa aktarın.",
+            },
+            {
+                title: "Kendi sunucunda barındır",
+                text: "Apache-2.0 altında açık kaynak. Docker ile, Cloudflare üzerinde veya tamamen çevrimdışı çalıştırın.",
+            },
+        ],
+        selfHostLink: "Kendi sunucunda barındırma rehberleri",
+        providersHeading: "Zaten kullandığınız AI sağlayıcısıyla çalışır",
+        providersText:
+            "Ayarlar'dan bir sağlayıcı ve model seçip kendi anahtarınızı girin. Anahtar tarayıcınızda saklanır, asla sunucuya kaydedilmez.",
+        ctaHeading: "Bir sonraki diyagramınızı tarif edin",
+    },
     en: {
         title: "Next AI Draw.io: draw.io diagrams by chatting with an AI",
         description:

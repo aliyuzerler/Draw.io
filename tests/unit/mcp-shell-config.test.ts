@@ -107,11 +107,12 @@ describe("shell language", () => {
         expect(matchLocale("")).toBeNull()
     })
 
-    it("prefers the server's language, then the browser's, then English", () => {
+    it("prefers the server's language, then the browser's, then Turkish", () => {
         expect(pickLocale("zh-tw", ["en-US"])).toBe("zh-Hant")
         expect(pickLocale("", ["de-DE", "ja-JP", "en"])).toBe("ja")
-        expect(pickLocale("de", ["fr"])).toBe("en")
-        expect(pickLocale("", [])).toBe("en")
+        expect(pickLocale("", ["tr-TR", "en"])).toBe("tr")
+        expect(pickLocale("de", ["fr"])).toBe("tr")
+        expect(pickLocale("", [])).toBe("tr")
     })
 
     it("has every dictionary, with the shell's own texts", () => {
