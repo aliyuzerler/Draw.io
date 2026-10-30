@@ -35,7 +35,7 @@ export type LandingTexts = {
 
 export const TEXTS: Record<Locale, LandingTexts> = {
     tr: {
-        title: "Next AI Draw.io: AI ile sohbet ederek draw.io diyagramları çizin",
+        title: "Synora: AI ile sohbet ederek draw.io diyagramları çizin",
         description:
             "Diyagramınızı tarif edin, AI gerçek bir draw.io tuvaline çizsin: AWS, Azure ve GCP mimari diyagramları, akış şemaları ve daha fazlası. Elle düzenleyin, AI'dan değişiklik isteyin ve herhangi birini geri alın. Ücretsiz ve açık kaynak; ayrıca masaüstü uygulaması ve MCP sunucusu olarak da mevcut.",
         keywords: [
@@ -108,7 +108,7 @@ export const TEXTS: Record<Locale, LandingTexts> = {
         ctaHeading: "Bir sonraki diyagramınızı tarif edin",
     },
     en: {
-        title: "Next AI Draw.io: draw.io diagrams by chatting with an AI",
+        title: "Synora: draw.io diagrams by chatting with an AI",
         description:
             "Describe a diagram and the AI draws it on a real draw.io canvas: AWS, Azure and GCP architecture diagrams, flowcharts and more. Edit it by hand, ask the AI for changes and undo any of them. Free and open source, also as a desktop app and an MCP server.",
         keywords: [
@@ -181,7 +181,7 @@ export const TEXTS: Record<Locale, LandingTexts> = {
         ctaHeading: "Describe your next diagram",
     },
     zh: {
-        title: "Next AI Draw.io：和 AI 对话绘制 draw.io 图表",
+        title: "Synora：和 AI 对话绘制 draw.io 图表",
         description:
             "描述您想要的图表，AI 会在真正的 draw.io 画布上画出来：AWS、Azure、GCP 架构图、流程图等。可以手动编辑，也可以让 AI 修改，任何修改都能撤销。免费开源，另有桌面应用和 MCP 服务器。",
         keywords: [
@@ -254,7 +254,7 @@ export const TEXTS: Record<Locale, LandingTexts> = {
         ctaHeading: "描述您的下一张图",
     },
     ja: {
-        title: "Next AI Draw.io：AI と話して draw.io の図を描く",
+        title: "Synora：AI と話して draw.io の図を描く",
         description:
             "描きたい図を伝えると、AI が本物の draw.io キャンバスに描きます。AWS、Azure、GCP のアーキテクチャ図やフローチャートなどに対応。手で編集することも、AI に修正を頼むこともでき、どの変更も取り消せます。無料のオープンソースで、デスクトップアプリと MCP サーバーもあります。",
         keywords: [
@@ -327,7 +327,7 @@ export const TEXTS: Record<Locale, LandingTexts> = {
         ctaHeading: "次の図を AI に伝えてみましょう",
     },
     "zh-Hant": {
-        title: "Next AI Draw.io：和 AI 對話繪製 draw.io 圖表",
+        title: "Synora：和 AI 對話繪製 draw.io 圖表",
         description:
             "描述您想要的圖表，AI 會在真正的 draw.io 畫布上畫出來：AWS、Azure、GCP 架構圖、流程圖等。可以手動編輯，也可以讓 AI 修改，任何修改都能復原。免費開源，另有桌面應用程式和 MCP 伺服器。",
         keywords: [

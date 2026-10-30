@@ -20,7 +20,7 @@ export const TEXTS: Record<Locale, GalleryPageTexts> = {
     tr: {
         title: "Galeri: örnek diyagramlar ve istemleri",
         description:
-            "Next AI Draw.io'da AI'ın tek bir istemden çizdiği diyagramlar: AWS, Azure, Google Cloud ve Kubernetes mimarileri, ER, UML ve oturum diyagramları, BPMN, swimlane'ler, Gantt grafikleri, zihin haritaları ve daha fazlası. Bir istemi kopyalayın veya editörde deneyin.",
+            "Synora'da AI'ın tek bir istemden çizdiği diyagramlar: AWS, Azure, Google Cloud ve Kubernetes mimarileri, ER, UML ve oturum diyagramları, BPMN, swimlane'ler, Gantt grafikleri, zihin haritaları ve daha fazlası. Bir istemi kopyalayın veya editörde deneyin.",
         keywords: [
             "draw.io örnekleri",
             "AI diyagram örnekleri",
@@ -62,7 +62,7 @@ export const TEXTS: Record<Locale, GalleryPageTexts> = {
     en: {
         title: "Gallery: example diagrams and their prompts",
         description:
-            "Diagrams the AI drew in Next AI Draw.io, each from one prompt: AWS, Azure, Google Cloud and Kubernetes architectures, ER, UML and sequence diagrams, BPMN, swimlanes, Gantt charts, mind maps and more. Copy a prompt or try it in the editor.",
+            "Diagrams the AI drew in Synora, each from one prompt: AWS, Azure, Google Cloud and Kubernetes architectures, ER, UML and sequence diagrams, BPMN, swimlanes, Gantt charts, mind maps and more. Copy a prompt or try it in the editor.",
         keywords: [
             "draw.io examples",
             "AI diagram examples",
@@ -104,7 +104,7 @@ export const TEXTS: Record<Locale, GalleryPageTexts> = {
     zh: {
         title: "示例图库：每张图和它的提示词",
         description:
-            "在 Next AI Draw.io 里由 AI 根据一句提示词画出的图：AWS、Azure、Google Cloud 和 Kubernetes 架构图，ER 图、UML 和时序图，BPMN、泳道图、甘特图、思维导图等。可以复制提示词，或直接在编辑器里试试。",
+            "在 Synora 里由 AI 根据一句提示词画出的图：AWS、Azure、Google Cloud 和 Kubernetes 架构图，ER 图、UML 和时序图，BPMN、泳道图、甘特图、思维导图等。可以复制提示词，或直接在编辑器里试试。",
         keywords: [
             "draw.io 示例",
             "AI 画图示例",
@@ -146,7 +146,7 @@ export const TEXTS: Record<Locale, GalleryPageTexts> = {
     ja: {
         title: "ギャラリー：サンプル図とそのプロンプト",
         description:
-            "Next AI Draw.io で AI が 1 つのプロンプトから描いた図：AWS、Azure、Google Cloud、Kubernetes の構成図、ER 図、UML、シーケンス図、BPMN、スイムレーン、ガントチャート、マインドマップなど。プロンプトをコピーしたり、エディタで試したりできます。",
+            "Synora で AI が 1 つのプロンプトから描いた図：AWS、Azure、Google Cloud、Kubernetes の構成図、ER 図、UML、シーケンス図、BPMN、スイムレーン、ガントチャート、マインドマップなど。プロンプトをコピーしたり、エディタで試したりできます。",
         keywords: [
             "draw.io サンプル",
             "AI 作図 サンプル",
@@ -188,7 +188,7 @@ export const TEXTS: Record<Locale, GalleryPageTexts> = {
     "zh-Hant": {
         title: "範例圖庫：每張圖和它的提示詞",
         description:
-            "在 Next AI Draw.io 裡由 AI 根據一句提示詞畫出的圖：AWS、Azure、Google Cloud 和 Kubernetes 架構圖，ER 圖、UML 和時序圖，BPMN、泳道圖、甘特圖、心智圖等。可以複製提示詞，或直接在編輯器裡試試。",
+            "在 Synora 裡由 AI 根據一句提示詞畫出的圖：AWS、Azure、Google Cloud 和 Kubernetes 架構圖，ER 圖、UML 和時序圖，BPMN、泳道圖、甘特圖、心智圖等。可以複製提示詞，或直接在編輯器裡試試。",
         keywords: [
             "draw.io 範例",
             "AI 畫圖範例",

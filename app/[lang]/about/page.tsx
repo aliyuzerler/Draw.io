@@ -56,7 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             description: t.description,
             type: "website",
             url: `/${locale}/about`,
-            siteName: "Next AI Draw.io",
+            siteName: "Synora",
             locale: OG_LOCALE[locale],
             images: [{ ...OG_IMAGE, alt: t.title }],
         },

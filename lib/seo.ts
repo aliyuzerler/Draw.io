@@ -1,7 +1,10 @@
 import type { Metadata } from "next"
 import { i18n, type Locale } from "@/lib/i18n/config"
 
-export const SITE_URL = "https://next-ai-drawio.jiang.jp"
+// Synora'nın kamuya açık adresi. Dağıtım adresi değişirse
+// NEXT_PUBLIC_SITE_URL ile güncelleyin (örn. https://synora.com.tr).
+export const SITE_URL =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://aliafsar.vercel.app"
 
 export const OG_LOCALE: Record<Locale, string> = {
     tr: "tr_TR",

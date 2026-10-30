@@ -1,8 +1,8 @@
 <div align="center">
 
-# Next AI Draw.io (Türkçe)
+# Synora
 
-**Yapay zekâ ile sohbet ederek draw.io diyagramları çizin ve düzenleyin — tamamen Türkçe arayüzle.**
+**Yapay zekâ ile sohbet ederek draw.io diyagramları çizin ve düzenleyin — tamamen Türkçe arayüzle. Artık SaaS: hesaplar, planlar ve yönetim paneliyle.**
 
 Türkçe | [English](./README_EN_UPSTREAM.md) · [中文](./docs/cn/README_CN.md) · [日本語](./docs/ja/README_JA.md)
 
@@ -17,7 +17,9 @@ Bir cümleyle diyagramı tarif edin; yapay zekâ onu gerçek bir draw.io tuvalin
 
 Proje; web uygulaması, Windows / macOS / Linux için masaüstü uygulaması ve Claude Code, Cursor, VS Code gibi yapay zekâ ajanları için bir MCP sunucusu olarak kullanılabiliyor.
 
-> **Bu fork hakkında:** Bu depo, [DayuanJiang/next-ai-draw-io](https://github.com/DayuanJiang/next-ai-draw-io) projesinin **Türkçe yerelleştirilmiş** sürümüdür. Arayüz varsayılan dili Türkçe yapılmış, 559 arayüz metni Türkçe'ye çevrilmiş ve **14 sayfalık dokümantasyonun tamamı** (`docs/tr/`) Türkçe olarak yazılmıştır.
+> **Bu proje hakkında:** Synora, [DayuanJiang/next-ai-draw-io](https://github.com/DayuanJiang/next-ai-draw-io) projesi temel alınarak Türkçe arayüzle ve SaaS yetenekleriyle geliştirilmektedir. Arayüzün varsayılan dili Türkçe; 559 arayüz metni ve **14 sayfalık dokümantasyonun tamamı** (`docs/tr/`) Türkçedir.
+>
+> **SaaS aşamaları (Faz 1 tamam):** kayıt ol / giriş yap / şifremi unuttum / şifre sıfırlama panelleri, JWT tabanlı oturum (httpOnly çerez), Prisma veritabanı şeması (kullanıcı, plan, diyagram, kullanım olayları), ücretsiz / pro / ekip planları, "Panelim" sayfası ve admin panelinde kullanıcı yönetimi. Sonraki fazlar: bulutta diyagram kalıcılığı, kullanıcı bazlı kota, iyzico abonelikleri, KVKK uyum sayfaları.
 
 ## Ekran Görüntüleri
 

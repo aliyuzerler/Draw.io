@@ -27,7 +27,7 @@ function serializeSettings() {
 }
 
 export async function GET(req: Request) {
-    const authError = checkAdminAuth(req)
+    const authError = await checkAdminAuth(req)
     if (authError) return authError
 
     return Response.json({
@@ -57,7 +57,7 @@ function validateValue(def: SettingDef, value: string): string | null {
 }
 
 export async function PUT(req: Request) {
-    const authError = checkAdminAuth(req)
+    const authError = await checkAdminAuth(req)
     if (authError) return authError
 
     if (!isSettingsWritable()) {

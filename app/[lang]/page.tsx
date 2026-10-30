@@ -20,7 +20,7 @@ export default async function Home({
                 HTML is otherwise empty for crawlers that do not run
                 JavaScript. Visually hidden; it repeats the start screen. */}
             <div className="sr-only">
-                <h1>Next AI Draw.io</h1>
+                <h1>Synora</h1>
                 <p>{dict.lobby.lede}</p>
                 <Link href={`/${lang}/about`}>{dict.settings.tabAbout}</Link>
             </div>

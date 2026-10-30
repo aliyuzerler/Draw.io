@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server"
 import { NextResponse } from "next/server"
+import { SESSION_COOKIE, verifySessionToken } from "@/lib/auth/session"
 import { i18n } from "./lib/i18n/config"
 
 function getLocale(_request: NextRequest): string {
@@ -9,7 +10,17 @@ function getLocale(_request: NextRequest): string {
     return i18n.defaultLocale
 }
 
-export function proxy(request: NextRequest) {
+// Paths that require an active session, and the auth pages that a signed-in
+// user has no business revisiting.
+const PROTECTED_PAGES = new Set(["dashboard", "billing", "settings"])
+const AUTH_PAGES = new Set([
+    "login",
+    "register",
+    "forgot-password",
+    "reset-password",
+])
+
+export async function proxy(request: NextRequest) {
     const pathname = request.nextUrl.pathname
 
     if (pathname.startsWith("/api/")) {
@@ -38,6 +49,30 @@ export function proxy(request: NextRequest) {
         (locale) =>
             !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`,
     )
+
+    // Session gate for /{lang}/dashboard & friends, and the reverse gate for
+    // the auth pages. Only applies to localized page paths.
+    const parts = pathname.split("/").filter(Boolean)
+    if (
+        !pathnameIsMissingLocale &&
+        parts.length >= 2 &&
+        (PROTECTED_PAGES.has(parts[1]) || AUTH_PAGES.has(parts[1]))
+    ) {
+        const token = request.cookies.get(SESSION_COOKIE)?.value
+        const session = token ? await verifySessionToken(token) : null
+        if (PROTECTED_PAGES.has(parts[1]) && !session) {
+            const url = request.nextUrl.clone()
+            url.pathname = `/${parts[0]}/login`
+            url.search = `next=${encodeURIComponent(pathname)}`
+            return NextResponse.redirect(url)
+        }
+        if (AUTH_PAGES.has(parts[1]) && session) {
+            const url = request.nextUrl.clone()
+            url.pathname = `/${parts[0]}/dashboard`
+            url.search = ""
+            return NextResponse.redirect(url)
+        }
+    }
 
     // Redirect if there is no locale
     if (pathnameIsMissingLocale) {

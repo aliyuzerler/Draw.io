@@ -1,0 +1,112 @@
+// Synora — SaaS şeması (Faz 1: kimlik + plan + diyagram + kullanım)
+// Geliştirme: SQLite (file:). Üretime (Neon/PostgreSQL) geçiş için
+// provider'ı "postgresql" yapın ve DATABASE_URL'i Neon bağlantı dizisi ile değiştirin.
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "sqlite"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id            String    @id @default(cuid())
+    email         String    @unique
+    name          String?
+    passwordHash  String
+    role          String    @default("USER") // USER | ADMIN
+    planId        String    @default("free")
+    status        String    @default("ACTIVE") // ACTIVE | SUSPENDED
+    emailVerified DateTime?
+    lastLoginAt   DateTime?
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+
+    plan          Plan      @relation(fields: [planId], references: [id])
+    resetTokens   PasswordResetToken[]
+    diagrams      Diagram[]
+    usageEvents   UsageEvent[]
+    subscriptions Subscription[]
+
+    @@index([planId])
+}
+
+model Plan {
+    id                  String   @id // free | pro | team
+    name                String
+    description         String?
+    priceMonthly        Int      @default(0) // kuruş: 149 TL = 14900
+    currency            String   @default("TRY")
+    dailyRequestLimit   Int      @default(10) // -1 = sınırsız
+    monthlyRequestLimit Int      @default(100)
+    dailyTokenLimit     Int      @default(200000)
+    maxDiagrams         Int      @default(5) // -1 = sınırsız kayıtlı diyagram
+    features            String   @default("[]") // JSON string dizisi
+    isActive            Boolean  @default(true)
+    sortOrder           Int      @default(0)
+    createdAt           DateTime @default(now())
+    updatedAt           DateTime @updatedAt
+
+    users         User[]
+    subscriptions Subscription[]
+}
+
+model PasswordResetToken {
+    id        String    @id @default(cuid())
+    userId    String
+    tokenHash String    @unique // sha256(token) — düz token asla saklanmaz
+    expiresAt DateTime
+    usedAt    DateTime?
+    createdAt DateTime  @default(now())
+    user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+}
+
+model Diagram {
+    id        String   @id @default(cuid())
+    userId    String
+    title     String   @default("İsimsiz Diyagram")
+    xml       String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId, updatedAt])
+}
+
+model UsageEvent {
+    id               String   @id @default(cuid())
+    userId           String?
+    ip               String?
+    kind             String   @default("chat") // chat | validation
+    model            String?
+    promptTokens     Int      @default(0)
+    completionTokens Int      @default(0)
+    createdAt        DateTime @default(now())
+    user             User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    @@index([userId, createdAt])
+    @@index([ip, createdAt])
+}
+
+model Subscription {
+    id                 String    @id @default(cuid())
+    userId             String
+    planId             String
+    status             String    @default("ACTIVE") // ACTIVE | PAST_DUE | CANCELED
+    provider           String    @default("iyzico")
+    providerRef        String? // iyzico abonelik referansı
+    currentPeriodStart DateTime  @default(now())
+    currentPeriodEnd   DateTime?
+    canceledAt         DateTime?
+    createdAt          DateTime  @default(now())
+    updatedAt          DateTime  @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    plan Plan @relation(fields: [planId], references: [id])
+
+    @@index([userId])
+}

@@ -38,21 +38,24 @@ describe("ORIGIN_SECRET", () => {
             }),
         )
 
-    it("lets every API call through when unset", () => {
-        expect(call("/api/chat")).toBeUndefined()
+    it("lets every API call through when unset", async () => {
+        expect(await call("/api/chat")).toBeUndefined()
     })
 
     it("refuses API calls without the right header", async () => {
         vi.stubEnv("ORIGIN_SECRET", "s3cret")
-        for (const res of [call("/api/chat"), call("/api/chat", "wrong")]) {
+        for (const res of [
+            await call("/api/chat"),
+            await call("/api/chat", "wrong"),
+        ]) {
             expect(res?.status).toBe(403)
         }
-        expect(call("/api/chat", "s3cret")).toBeUndefined()
+        expect(await call("/api/chat", "s3cret")).toBeUndefined()
     })
 
-    it("leaves pages alone, such as the health check on /", () => {
+    it("leaves pages alone, such as the health check on /", async () => {
         vi.stubEnv("ORIGIN_SECRET", "s3cret")
-        expect(call("/")?.status).toBe(307)
-        expect(call("/en")).toBeUndefined()
+        expect((await call("/"))?.status).toBe(307)
+        expect(await call("/en")).toBeUndefined()
     })
 })

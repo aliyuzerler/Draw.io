@@ -81,3 +81,8 @@ ai-models.json
 
 # admin panel settings (contains secrets)
 data/
+
+# synora
+/prisma/*.db
+/db/*.db
+/data/

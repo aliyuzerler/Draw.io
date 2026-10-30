@@ -517,9 +517,7 @@ function AboutTab() {
             <div className="flex items-center gap-3">
                 <BrandMark className="size-10 rounded-xl" />
                 <div>
-                    <div className="text-[15px] font-semibold">
-                        Next AI Draw.io
-                    </div>
+                    <div className="text-[15px] font-semibold">Synora</div>
                     <div className="text-xs text-muted-foreground">
                         {dict.settings.appVersion} {process.env.APP_VERSION}
                     </div>

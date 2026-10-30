@@ -8,7 +8,7 @@ import { isPrivateUrl } from "@/lib/ssrf-protection"
 const MAX_CONTENT_LENGTH = 150000 // Match PDF limit
 const MAX_RESPONSE_BYTES = 5 * 1024 * 1024
 const EXTRACT_TIMEOUT_MS = 15000
-const USER_AGENT = "Mozilla/5.0 (compatible; NextAIDrawio/1.0)"
+const USER_AGENT = "Mozilla/5.0 (compatible; SynoraBot/1.0)"
 
 // Detect the page's charset so non-UTF-8 pages (Shift_JIS/GBK/EUC/Big5, common
 // on CJK sites) are decoded correctly. Response.text() always assumes UTF-8 and

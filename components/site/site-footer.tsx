@@ -49,7 +49,7 @@ export function SiteFooter({ lang, path }: { lang: Locale; path: string }) {
                     >
                         <BrandMark className="size-6" />
                         <span className="text-[14.5px] font-semibold">
-                            Next AI Draw.io
+                            Synora
                         </span>
                     </Link>
                     <p className="mt-3 max-w-[30ch] text-[13.5px] leading-relaxed text-muted-foreground">

@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { UserMenu } from "@/components/auth/user-menu"
 import { GitHubIcon } from "@/components/icons/github"
 import { BrandMark } from "@/components/workspace/brand-mark"
 import type { Locale } from "@/lib/i18n/config"
@@ -40,7 +41,7 @@ export async function SiteHeader({
             >
                 <BrandMark className="size-7" />
                 <span className="text-[15px] font-semibold tracking-[-0.01em]">
-                    Next AI Draw.io
+                    Synora
                 </span>
             </Link>
             {/* Below 1024 px the text links move into the menu */}
@@ -68,6 +69,7 @@ export async function SiteHeader({
                     </a>
                     <LanguageMenu lang={lang} label={t.language} />
                     <ThemeToggle />
+                    <UserMenu lang={lang} />
                 </div>
                 <Link
                     href={`/${lang}`}

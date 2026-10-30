@@ -32,10 +32,11 @@ import {
 } from "./admin-shared"
 import { ModelsSection } from "./models-section"
 import { SettingField } from "./setting-field"
+import { UsersSection } from "./users-section"
 
 // ── Page ─────────────────────────────────────────────────────────────
 
-const NAV_GROUP_IDS = ["models", ...SETTING_GROUPS.map((g) => g.id)]
+const NAV_GROUP_IDS = ["users", "models", ...SETTING_GROUPS.map((g) => g.id)]
 
 // For each toggleable group, whether any of its settings has a value (from
 // the settings file or the environment)
@@ -63,7 +64,11 @@ export default function AdminPage() {
     const navItems = NAV_GROUP_IDS.map((id) => ({
         id,
         title:
-            id === "models" ? dict.admin.models : (groupText(id)?.title ?? id),
+            id === "users"
+                ? "Kullanıcılar"
+                : id === "models"
+                  ? dict.admin.models
+                  : (groupText(id)?.title ?? id),
     }))
     const [password, setPassword] = useState("")
     const [authedPassword, setAuthedPassword] = useState<string | null>(null)
@@ -143,7 +148,7 @@ export default function AdminPage() {
                 applySettingsResponse(settingsData)
                 applyProvidersResponse(providersData)
                 setAuthedPassword(pw)
-                sessionStorage.setItem(SESSION_PASSWORD_KEY, pw)
+                if (pw) sessionStorage.setItem(SESSION_PASSWORD_KEY, pw)
             } catch (err) {
                 setAuthError(
                     err instanceof Error ? err.message : dict.admin.loginFailed,
@@ -155,10 +160,25 @@ export default function AdminPage() {
         [applySettingsResponse, applyProvidersResponse, dict],
     )
 
-    // Restore session on mount
+    // Restore session on mount: a stored panel password first, then a
+    // Synora admin session (login without a password — the API accepts the
+    // session cookie when the role is ADMIN).
     useEffect(() => {
         const stored = sessionStorage.getItem(SESSION_PASSWORD_KEY)
-        if (stored) void login(stored)
+        if (stored) {
+            void login(stored)
+            return
+        }
+        let cancelled = false
+        fetch(getApiEndpoint("/api/auth/me"), { cache: "no-store" })
+            .then((r) => r.json())
+            .then((data) => {
+                if (!cancelled && data.user?.role === "ADMIN") void login("")
+            })
+            .catch(() => {})
+        return () => {
+            cancelled = true
+        }
     }, [login])
 
     // Warn before leaving with unsaved changes
@@ -449,6 +469,22 @@ export default function AdminPage() {
                 </nav>
 
                 <main className="min-w-0 flex-1 pb-24">
+                    {/* Users section — Synora accounts, roles, plans */}
+                    <section aria-labelledby="users" className="mb-10">
+                        <h2
+                            id="users"
+                            className="scroll-mt-20 text-base font-semibold"
+                        >
+                            Kullanıcılar
+                        </h2>
+                        <p className="mb-3 mt-1 text-sm text-muted-foreground text-pretty">
+                            Synora hesapları: rol, plan ve durum yönetimi.
+                        </p>
+                        <div className="overflow-hidden rounded-lg border bg-card p-4">
+                            <UsersSection password={authedPassword} />
+                        </div>
+                    </section>
+
                     {/* Models section */}
                     <section aria-labelledby="models" className="mb-10">
                         <h2

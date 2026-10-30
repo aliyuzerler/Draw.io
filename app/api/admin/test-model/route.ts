@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic"
 // masked {isSet} markers, which are resolved against settings.json — so
 // testing works both before and after saving.
 export async function POST(req: Request) {
-    const authError = checkAdminAuth(req)
+    const authError = await checkAdminAuth(req)
     if (authError) return authError
 
     let body: { provider?: unknown; modelId?: string }

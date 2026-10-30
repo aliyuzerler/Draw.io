@@ -111,7 +111,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             .filter((locale) => loadDoc(locale, file).locale === locale)
             .map((locale) => [locale, `/${locale}${path}`]),
     )
-    const title = `${doc.title} | Next AI Draw.io ${TEXTS[doc.locale].docs}`
+    const title = `${doc.title} | Synora ${TEXTS[doc.locale].docs}`
     return {
         title,
         description: doc.summary,
@@ -125,7 +125,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             description: doc.summary,
             type: "article",
             url: `/${doc.locale}${path}`,
-            siteName: "Next AI Draw.io",
+            siteName: "Synora",
             // The language the text is in, as for the canonical URL
             locale: OG_LOCALE[doc.locale],
             images: [{ ...OG_IMAGE, alt: doc.title }],
@@ -168,7 +168,7 @@ export default async function DocsPage({ params }: Props) {
                         url,
                         isPartOf: {
                             "@type": "WebSite",
-                            name: "Next AI Draw.io",
+                            name: "Synora",
                             url: SITE_URL,
                         },
                     },

@@ -1,13 +1,25 @@
 import { timingSafeEqual } from "crypto"
 
-// Shared auth for admin API routes: compares x-admin-password header
-// against the ADMIN_PASSWORD env var. Unset password = panel disabled.
-export function checkAdminAuth(req: Request): Response | null {
+import { getSessionFromRequest } from "@/lib/auth/session"
+
+// Shared auth for admin API routes. Accepts either a valid Synora session
+// cookie with the ADMIN role, or the x-admin-password header against the
+// ADMIN_PASSWORD env var (legacy panel login). Unset password and no admin
+// session = panel disabled.
+export async function checkAdminAuth(req: Request): Promise<Response | null> {
+    // 1) Synora oturumu (çerez) — rolü ADMIN olanlar geçer
+    try {
+        const session = await getSessionFromRequest(req)
+        if (session?.role === "ADMIN") return null
+    } catch {
+        // Oturum okunamadıysa şifre akışıyla devam
+    }
+    // 2) Klasik panel şifresi
     const password = process.env.ADMIN_PASSWORD
     if (!password) {
         return Response.json(
             {
-                error: "Admin panel is disabled. Set the ADMIN_PASSWORD environment variable to enable it.",
+                error: "Admin panel is disabled. Set the ADMIN_PASSWORD environment variable or sign in as an admin user.",
             },
             { status: 403 },
         )

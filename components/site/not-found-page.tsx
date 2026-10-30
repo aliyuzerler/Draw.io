@@ -57,7 +57,7 @@ export function NotFoundPage() {
     const t = TEXTS[lang]
     // The server's title is in English: it cannot know the language
     useEffect(() => {
-        document.title = `${t.title} | Next AI Draw.io`
+        document.title = `${t.title} | Synora`
     }, [t.title])
     return (
         <div className="site lp-grid flex min-h-screen items-center justify-center bg-canvas px-6 text-foreground md:px-8">
@@ -67,9 +67,7 @@ export function NotFoundPage() {
                     className="inline-flex items-center gap-2.5"
                 >
                     <BrandMark className="size-7" />
-                    <span className="text-[15px] font-semibold">
-                        Next AI Draw.io
-                    </span>
+                    <span className="text-[15px] font-semibold">Synora</span>
                 </Link>
                 <p className="mt-10 font-mono text-[13px] text-muted-foreground">
                     404

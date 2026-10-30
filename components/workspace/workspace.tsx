@@ -3,8 +3,10 @@
 import { MessageSquare, PanelRightOpen, Settings, Shapes } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
+import { UserMenu } from "@/components/auth/user-menu"
 import { CanvasStage } from "@/components/canvas/canvas-stage"
 import { CompareDialog } from "@/components/canvas/compare-dialog"
+import { useLocale } from "@/components/canvas/locale-context"
 import { SelectionAsk } from "@/components/canvas/selection-ask"
 import {
     ChatEngineProvider,
@@ -86,6 +88,7 @@ function StartBar({
     nameClassName: string
 }) {
     const dict = useDictionary()
+    const lang = useLocale()
     const openSettings = useUiStore((s) => s.openSettings)
     return (
         <div className={className}>
@@ -96,7 +99,7 @@ function StartBar({
                     nameClassName,
                 )}
             >
-                Next AI Draw.io
+                Synora
             </span>
             <DocsButton />
             <IconButton
@@ -106,6 +109,7 @@ function StartBar({
             >
                 <Settings />
             </IconButton>
+            <UserMenu lang={lang} compact />
         </div>
     )
 }

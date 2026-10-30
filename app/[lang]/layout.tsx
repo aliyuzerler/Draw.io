@@ -52,11 +52,11 @@ export async function generateMetadata({
     const lang: Locale = hasLocale(rawLang) ? rawLang : i18n.defaultLocale
 
     const titles: Record<Locale, string> = {
-        tr: "Next AI Draw.io - AI Destekli Diyagram Oluşturucu",
-        en: "Next AI Draw.io - AI-Powered Diagram Generator",
-        zh: "Next AI Draw.io - AI 驱动的图表生成器",
-        ja: "Next AI Draw.io - AI 搭載ダイアグラム生成ツール",
-        "zh-Hant": "Next AI Draw.io - AI 驅動的圖表產生器",
+        tr: "Synora - AI Destekli Diyagram Oluşturucu",
+        en: "Synora - AI-Powered Diagram Generator",
+        zh: "Synora - AI 驱动的图表生成器",
+        ja: "Synora - AI 搭載ダイアグラム生成ツール",
+        "zh-Hant": "Synora - AI 驅動的圖表產生器",
     }
 
     const descriptions: Record<Locale, string> = {
@@ -82,21 +82,21 @@ export async function generateMetadata({
             "free diagram generator",
             "online diagram maker",
         ],
-        authors: [{ name: "Next AI Draw.io" }],
-        creator: "Next AI Draw.io",
-        publisher: "Next AI Draw.io",
+        authors: [{ name: "Synora" }],
+        creator: "Synora",
+        publisher: "Synora",
         metadataBase: new URL(SITE_URL),
         openGraph: {
             title: titles[lang],
             description: descriptions[lang],
             type: "website",
             url: `/${lang}`,
-            siteName: "Next AI Draw.io",
+            siteName: "Synora",
             locale: OG_LOCALE[lang],
             images: [
                 {
                     ...OG_IMAGE,
-                    alt: "Next AI Draw.io - AI-powered diagram creation tool",
+                    alt: "Synora - AI-powered diagram creation tool",
                 },
             ],
         },
@@ -140,7 +140,7 @@ export default async function RootLayout({
     const jsonLd = {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
-        name: "Next AI Draw.io",
+        name: "Synora",
         applicationCategory: "DesignApplication",
         operatingSystem: "Web, Windows, macOS, Linux",
         description:

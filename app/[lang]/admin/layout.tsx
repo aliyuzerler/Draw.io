@@ -4,7 +4,7 @@ import type { Metadata } from "next"
 // panel is not for search results, and the home page's canonical and
 // language links do not apply to it.
 export const metadata: Metadata = {
-    title: "Admin - Next AI Draw.io",
+    title: "Admin - Synora",
     robots: { index: false, follow: false },
     alternates: null,
 }

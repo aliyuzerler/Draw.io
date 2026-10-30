@@ -44,13 +44,13 @@ async function payload() {
 }
 
 export async function GET(req: Request) {
-    const authError = checkAdminAuth(req)
+    const authError = await checkAdminAuth(req)
     if (authError) return authError
     return Response.json(await payload())
 }
 
 export async function PUT(req: Request) {
-    const authError = checkAdminAuth(req)
+    const authError = await checkAdminAuth(req)
     if (authError) return authError
 
     if (!isSettingsWritable()) {

@@ -77,7 +77,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const locale = localeOf((await params).lang)
     const t = TEXTS[locale]
     return {
-        title: `${t.title} | Next AI Draw.io`,
+        title: `${t.title} | Synora`,
         description: t.description,
         keywords: t.keywords,
         alternates: localeAlternates(locale, "/mcp"),
@@ -86,7 +86,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             description: t.description,
             type: "website",
             url: `/${locale}/mcp`,
-            siteName: "Next AI Draw.io",
+            siteName: "Synora",
             locale: OG_LOCALE[locale],
             images: [{ ...OG_IMAGE, alt: t.title }],
         },
@@ -173,7 +173,7 @@ export default async function Mcp({ params }: Props) {
                 data={{
                     "@context": "https://schema.org",
                     "@type": "SoftwareApplication",
-                    name: "Next AI Draw.io MCP Server",
+                    name: "Synora MCP Server",
                     alternateName: "@next-ai-drawio/mcp-server",
                     applicationCategory: "DeveloperApplication",
                     operatingSystem: "Windows, macOS, Linux",

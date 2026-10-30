@@ -4,7 +4,7 @@ import { NotFoundPage } from "@/components/site/not-found-page"
 
 // A not-found page gets no params, so its title stays in English
 export const metadata: Metadata = {
-    title: "Page not found | Next AI Draw.io",
+    title: "Page not found | Synora",
 }
 
 export default function NotFound() {
