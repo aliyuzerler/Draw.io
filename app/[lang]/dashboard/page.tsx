@@ -12,15 +12,19 @@ import { notFound, redirect } from "next/navigation"
 import { AccountActions } from "@/components/auth/account-actions"
 import { authText } from "@/components/auth/auth-texts"
 import { DiagramsPanel } from "@/components/auth/diagrams-panel"
-import { LogoutButton } from "@/components/auth/logout-button"
-import { BrandMark } from "@/components/workspace/brand-mark"
+import { SiteFooter } from "@/components/site/site-footer"
+import { SiteHeader } from "@/components/site/site-header"
 import { ensurePlans } from "@/lib/auth/seed"
 import { getSession } from "@/lib/auth/session-server"
 import { db } from "@/lib/db"
 import type { Locale } from "@/lib/i18n/config"
 import { hasLocale } from "@/lib/i18n/dictionaries"
 
-export const metadata: Metadata = { title: "Panelim | Synora" }
+// Kişisel panel arama sonuçlarına ve dizine girmemeli.
+export const metadata: Metadata = {
+    title: "Panelim | Synora",
+    robots: { index: false, follow: false },
+}
 
 function formatLimit(n: number, unlimitedLabel: string): string {
     return n < 0 ? unlimitedLabel : n.toLocaleString("tr-TR")
@@ -146,27 +150,10 @@ export default async function DashboardPage({
     const isAdmin = user.role === "ADMIN"
 
     return (
-        <div className="flex min-h-screen flex-col bg-background">
-            <header className="border-b border-border">
-                <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-3 md:px-8">
-                    <Link
-                        href={`/${lang}`}
-                        className="flex items-center gap-2.5 text-[15px] font-semibold tracking-[-0.01em]"
-                    >
-                        <BrandMark className="size-7" />
-                        Synora
-                    </Link>
-                    <div className="flex items-center gap-2">
-                        <Link
-                            href={`/${lang}`}
-                            className="rounded-lg bg-foreground px-3.5 py-2 text-[13px] font-medium text-background"
-                        >
-                            {t.backToHome}
-                        </Link>
-                        <LogoutButton lang={lang} label={t.logout} />
-                    </div>
-                </div>
-            </header>
+        <div className="flex min-h-screen flex-col bg-canvas text-foreground">
+            <div className="border-b border-border">
+                <SiteHeader lang={lang} />
+            </div>
 
             <main className="mx-auto w-full max-w-5xl flex-1 px-5 py-8 md:px-8">
                 <div className="flex flex-wrap items-end justify-between gap-3">
@@ -306,7 +293,7 @@ export default async function DashboardPage({
                                         <li key={f} className="flex gap-1.5">
                                             <span
                                                 aria-hidden
-                                                className="text-emerald-600 dark:text-emerald-400"
+                                                className="text-success"
                                             >
                                                 ✓
                                             </span>
@@ -370,9 +357,7 @@ export default async function DashboardPage({
                 )}
             </main>
 
-            <footer className="pb-6 text-center text-xs text-muted-foreground">
-                © {new Date().getFullYear()} Synora
-            </footer>
+            <SiteFooter lang={lang} path="/dashboard" />
         </div>
     )
 }

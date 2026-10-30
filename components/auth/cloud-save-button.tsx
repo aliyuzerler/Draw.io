@@ -128,7 +128,7 @@ function SaveButton({
             {state === "saving" ? (
                 <Loader2 className="size-3.5 animate-spin" />
             ) : state === "saved" ? (
-                <Check className="size-3.5 text-emerald-600 dark:text-emerald-400" />
+                <Check className="size-3.5 text-success" />
             ) : (
                 <CloudUpload className="size-3.5" />
             )}

@@ -2,11 +2,15 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import { BrandMark } from "@/components/workspace/brand-mark"
+import { SiteFooter } from "@/components/site/site-footer"
+import { SiteHeader } from "@/components/site/site-header"
+import type { Locale } from "@/lib/i18n/config"
 import { hasLocale } from "@/lib/i18n/dictionaries"
 
 export const metadata: Metadata = {
     title: "Kullanım Şartları | Synora",
+    description:
+        "Synora kullanım şartları: hesap sorumluluğu, planlar ve ödeme, kabul edilebilir kullanım, fikri mülkiyet ve sorumluluk sınırı.",
 }
 
 const UPDATED = "30 Ekim 2026"
@@ -18,29 +22,15 @@ export default async function TermsPage({
 }) {
     const { lang: rawLang } = await params
     if (!hasLocale(rawLang)) notFound()
-    const lang = rawLang
+    const lang = rawLang as Locale
 
     return (
-        <div className="flex min-h-screen flex-col bg-background">
-            <header className="border-b border-border">
-                <div className="mx-auto flex max-w-3xl items-center justify-between px-5 py-3">
-                    <Link
-                        href={`/${lang}`}
-                        className="flex items-center gap-2.5 text-[15px] font-semibold tracking-[-0.01em]"
-                    >
-                        <BrandMark className="size-7" />
-                        Synora
-                    </Link>
-                    <Link
-                        href={`/${lang}/privacy`}
-                        className="text-[13px] text-muted-foreground hover:text-foreground"
-                    >
-                        Gizlilik →
-                    </Link>
-                </div>
-            </header>
+        <div className="flex min-h-screen flex-col bg-canvas text-foreground">
+            <div className="border-b border-border">
+                <SiteHeader lang={lang} />
+            </div>
 
-            <main className="mx-auto w-full max-w-3xl flex-1 px-5 py-10 text-[15px] leading-relaxed">
+            <main className="mx-auto w-full max-w-3xl flex-1 px-5 py-12 text-[15px] leading-relaxed md:px-8">
                 <h1 className="text-2xl font-semibold tracking-[-0.01em]">
                     Kullanım Şartları
                 </h1>
@@ -149,11 +139,24 @@ export default async function TermsPage({
                         uyuşmazlıklarda Türkiye Cumhuriyeti hukuku uygulanır.
                     </p>
                 </section>
+
+                <nav className="mt-12 flex flex-wrap gap-3 border-t border-border pt-6 text-sm">
+                    <Link
+                        href={`/${lang}/privacy`}
+                        className="rounded-lg border border-border bg-card px-3.5 py-2 font-medium hover:bg-foreground/[0.06]"
+                    >
+                        Gizlilik Politikası (KVKK) →
+                    </Link>
+                    <Link
+                        href={`/${lang}/pricing`}
+                        className="rounded-lg border border-border bg-card px-3.5 py-2 font-medium hover:bg-foreground/[0.06]"
+                    >
+                        Fiyatlandırma →
+                    </Link>
+                </nav>
             </main>
 
-            <footer className="pb-6 text-center text-xs text-muted-foreground">
-                © {new Date().getFullYear()} Synora
-            </footer>
+            <SiteFooter lang={lang} path="/terms" />
         </div>
     )
 }

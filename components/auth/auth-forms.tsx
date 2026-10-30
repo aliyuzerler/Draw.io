@@ -24,7 +24,7 @@ function AuthCard({
     footer?: ReactNode
 }) {
     return (
-        <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
+        <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-float sm:p-8">
             <h1 className="text-xl font-semibold tracking-[-0.01em]">
                 {title}
             </h1>
@@ -73,7 +73,7 @@ function Notice({
             className={`flex items-start gap-2 rounded-lg border p-3 text-[13px] ${
                 isError
                     ? "border-destructive/30 bg-destructive/10 text-destructive"
-                    : "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                    : "border-success/30 bg-success-muted text-success"
             }`}
         >
             {isError ? (

@@ -1,6 +1,6 @@
 # Synora — Yapılan Değişiklikler ve Ekran Görüntüleri
 
-Bu belge, SaaS dönüşümü kapsamında yapılan tüm değişiklikleri **ekran görüntüleriyle** açıklar. Değişiklikler `192666d` (Türkçe arayüz) sonrasına ait **5 commit** içinde, raporda planlanan **4 faz** hâlinde geliştirildi:
+Bu belge, SaaS dönüşümü kapsamında yapılan tüm değişiklikleri **ekran görüntüleriyle** açıklar. Değişiklikler `192666d` (Türkçe arayüz) sonrasına ait **6 commit** içinde, raporda planlanan **4 faz** ve ardından gelen uyum paketi hâlinde geliştirildi:
 
 | Faz | Commit | Kapsam | Bu belgedeki ekranlar |
 |---|---|---|---|
@@ -9,7 +9,8 @@ Bu belge, SaaS dönüşümü kapsamında yapılan tüm değişiklikleri **ekran 
 | Faz 3 | `c5750a4` | Fiyatlandırma sayfası, abonelik akışı (iyzico) | 9 |
 | Faz 4 | `3814f5c` | KVKK uyumu, hesap veri hakları | 5, 10, 11 |
 | Cila | `d79a52c` | Fiyatlandırma CTA mantığı, kullanım kartı metni | 9 |
-| Düzeltme | *(bu belgeyle)* | Admin panelinin Synora oturumuyla açılamama hatası | 6 |
+| Düzeltme | `20efff3` | Admin panelinin Synora oturumuyla açılamama hatası + belge | 6 |
+| Faz 5 | *(bu commit)* | **Arayüz uyum paketi:** tüm SaaS sayfaları SiteHeader/SiteFooter iskeletine bağlandı; tema + dil menüleri, `--success` token'ları, SEO metadata | 1–5, 9–11, 13, 14 |
 
 Tüm sayfalar yerel geliştirme ortamında (`SQLite` + `next dev`) gerçek oturum açılıp gerçek verilerle gezilerek doğrulandı; **921 birim testin tamamı geçer**.
 
@@ -19,13 +20,13 @@ Tüm sayfalar yerel geliştirme ortamında (`SQLite` + `next dev`) gerçek oturu
 
 ![Giriş paneli](./ekran-goruntuleri/01-giris.png)
 
-**Faz 1.** Uygulamanın ilk kimlik sayfası. Üst çubukta Synora markası ve "Editöre dön" bağlantısı; ortada kart:
+**Faz 1; Faz 5 ile site iskeleti.** Uygulamanın ilk kimlik sayfası. Üst çubuk artık projenin standart site başlığı: marka, MCP/Galeri/Belgeler gezinmesi, GitHub, **dil menüsü**, **tema düğmesi** ve oturum düğmesi; altta site footer'ı. Ortada kart:
 
 - **E-posta + Şifre** alanları; `ornek@sirket.com` ve noktalı parola ipuçlarıyla,
 - **Şifremi unuttum** bağlantısı → 3. panele gider,
 - **Hesabın yok mu? hesap oluştur** bağlantısı → 2. panele gider.
 
-Teknik: `/api/auth/login` e-postayıbcrypt ile doğrular, `AUTH_SECRET` ile imzalı **httpOnly çerez** (`synora_session`, 30 gün) verir. Hatalı denemeler 15 dakikada 5 ile sınırlandırılır (IP + e-posta bazlı hız limiti).
+Teknik: `/api/auth/login` e-postayı bcrypt ile doğrular, `AUTH_SECRET` ile imzalı **httpOnly çerez** (`synora_session`, 30 gün) verir. Hatalı denemeler 15 dakikada 5 ile sınırlandırılır (IP + e-posta bazlı hız limiti).
 
 ---
 
@@ -68,7 +69,7 @@ Teknik: `/api/auth/reset-password` token'ın SHA-256 özetini veritabanındakiyl
 
 ![Panelim](./ekran-goruntuleri/05-panelim.png)
 
-**Faz 2 + 4.** Oturum açan herkesin kişisel paneli; üç kart + iki bölüm:
+**Faz 2 + 4; Faz 5 ile site başlığı.** Oturum açan herkesin kişisel paneli; üç kart + iki bölüm:
 
 - **Hesap kartı:** ad, e-posta, **Rol** (Yönetici/Üye), **Durum** (Aktif/Askıda), Katılım ve Son giriş tarihleri. Altında Faz 4'ün veri hakları: **"Verilerimi indir (JSON)"** (hesap + diyagram + kullanım verilerini tek dosyada dışa aktarır) ve **"Hesabımı sil"** (şifre onayı istenir, tüm veriler kalıcı silinir — KVKK m. 11).
 - **Plan kartı:** geçerli plan (Ücretsiz 0 ₺/ay), **"Planları gör ve yükselt →"** bağlantısı, günlük/aylık istek ve diyagram sınırları ile **"Dahil olanlar"** listesi.
@@ -110,7 +111,7 @@ Teknik: `/api/diagrams` (GET/POST) ve `/api/diagrams/[id]` (PUT/DELETE) — her 
 
 ![Fiyatlandırma](./ekran-goruntuleri/09-fiyatlandirma.png)
 
-**Faz 3.** Rapordaki Freemium yapısının vitrine çıkan hâli:
+**Faz 3; Faz 5 ile site iskeleti ve TR/EN metinler.** Rapordaki Freemium yapısının vitrine çıkan hâli:
 
 | Plan | Fiyat | Öne çıkanlar |
 |---|---|---|
@@ -128,7 +129,7 @@ Teknik: "Yükselt" düğmesi `/api/billing/checkout`'a abonelik talebi açar (iy
 
 ![Gizlilik](./ekran-goruntuleri/10-gizlilik-kvkk.png)
 
-**Faz 4.** 6698 sayılı KVKK'ya uygun aydınlatma metni: veri sorumlusu, işlenen veri kategorileri (hesap, diyagram, kullanım, teknik kayıtlar), işleme amaçları ve hukuki sebepler, çerez politikası (yalnızca zorunlu `synora_session` çerezi), saklama süreleri, üçüncü taraflar (iyzico'da kart verisi saklanmaz) ve haklarınız. Kayıt panelindeki "gizlilik politikasını (KVKK)" bağlantısı bu sayfaya gider.
+**Faz 4; Faz 5 ile site iskeleti.** 6698 sayılı KVKK'ya uygun aydınlatma metni: veri sorumlusu, işlenen veri kategorileri (hesap, diyagram, kullanım, teknik kayıtlar), işleme amaçları ve hukuki sebepler, çerez politikası (yalnızca zorunlu `synora_session` çerezi), saklama süreleri, üçüncü taraflar (iyzico'da kart verisi saklanmaz) ve haklarınız. Kayıt panelindeki "gizlilik politikasını (KVKK)" bağlantısı bu sayfaya gider.
 
 ---
 
@@ -145,6 +146,20 @@ Teknik: "Yükselt" düğmesi `/api/billing/checkout`'a abonelik talebi açar (iy
 ![Editör](./ekran-goruntuleri/12-editor-bulut-diyagrami.png)
 
 **Faz 2.** Panelim → **Düzenle** ile açılan kayıtlı diyagram (`?diagram=<id>`): tuvalde diyagram, sağda sohbet paneli. Aynı akış "Buluta kaydet" ile tersine çalışır; her iki yön de oturum çereziyle kimliklendirilir ve kota hesabına yazılır.
+
+---
+
+## 13. Giriş Paneli — Koyu Tema
+
+![Giriş paneli koyu tema](./ekran-goruntuleri/13-giris-koyu-tema.png)
+
+**Faz 5.** Kimlik sayfaları artık projenin gerçek `SiteHeader` ve `SiteFooter` iskeletini kullanıyor: üst çubukta MCP / Galeri / Belgeler gezinmesi, GitHub yıldızı, **dil menüsü**, **tema düğmesi** ve oturum menüsü; altta ürün/proje/destek sütunları. Koyu tema, tasarım token'ları sayesinde kimlik kartlarına da otomatik uygulanıyor — ayrıca tema ayarı tüm sayfalarda korunuyor.
+
+## 14. Panelim — Koyu Tema ve Hesap Menüsü Entegrasyonu
+
+![Panelim koyu tema](./ekran-goruntuleri/14-panelim-koyu-tema.png)
+
+**Faz 5.** Panelim'deki elle yazılmış üst çubuk (marka + "Editöre dön" + Çıkış düğmesi) kaldırıldı; SiteHeader'daki **hesap menüsü** (Panelim, Yönetim paneli, Çıkış yap) bu işlevlerin tamamını üstlendi — editör başlangıç çubuğundaki menüyle birebir aynı. Sayfa `noindex` olarak işaretlendi.
 
 ---
 

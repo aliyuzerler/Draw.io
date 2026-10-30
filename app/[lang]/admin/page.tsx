@@ -622,7 +622,7 @@ export default function AdminPage() {
                             className={cn(
                                 "flex min-w-0 items-center gap-1.5 truncate text-sm",
                                 saveMessage?.ok
-                                    ? "text-green-600 dark:text-green-400"
+                                    ? "text-success"
                                     : saveMessage
                                       ? "text-destructive"
                                       : "text-muted-foreground",

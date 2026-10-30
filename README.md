@@ -53,7 +53,11 @@ Proje; web uygulaması, Windows / macOS / Linux için masaüstü uygulaması ve 
 |---|---|---|---|
 | ![Giriş](./docs/ekran-goruntuleri/01-giris.png) | ![Kayıt Ol](./docs/ekran-goruntuleri/02-kayit-ol.png) | ![Panelim](./docs/ekran-goruntuleri/05-panelim.png) | ![Yönetim](./docs/ekran-goruntuleri/06-yonetim-paneli.png) |
 
-Diğer tüm ekran görüntüleri (şifre sıfırlama, fiyatlandırma, KVKK sayfaları, hesap menüsü) ve tek tek açıklamaları: **[docs/DEGISIKLIKLER.md](./docs/DEGISIKLIKLER.md)**.
+| Koyu Tema · Giriş | Koyu Tema · Panelim |
+|---|---|
+| ![Giriş koyu tema](./docs/ekran-goruntuleri/13-giris-koyu-tema.png) | ![Panelim koyu tema](./docs/ekran-goruntuleri/14-panelim-koyu-tema.png) |
+
+Tüm SaaS sayfaları projenin standart site başlığı ve alt bilgisini paylaşır; tema ve dil menüleri her panelde çalışır. Diğer tüm ekran görüntüleri (şifre sıfırlama, fiyatlandırma, KVKK sayfaları, hesap menüsü) ve tek tek açıklamaları: **[docs/DEGISIKLIKLER.md](./docs/DEGISIKLIKLER.md)**.
 
 ## Öne Çıkanlar
 

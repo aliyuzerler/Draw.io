@@ -4,14 +4,16 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 
 import { UpgradeButton } from "@/components/auth/upgrade-button"
-import { BrandMark } from "@/components/workspace/brand-mark"
+import { SiteFooter } from "@/components/site/site-footer"
+import { SiteHeader } from "@/components/site/site-header"
 import { PLAN_SEEDS } from "@/lib/auth/seed"
 import { getSession } from "@/lib/auth/session-server"
 import { db } from "@/lib/db"
 import type { Locale } from "@/lib/i18n/config"
 import { hasLocale } from "@/lib/i18n/dictionaries"
+import { localeAlternates, OG_IMAGE, OG_LOCALE } from "@/lib/seo"
 
-export const metadata: Metadata = { title: "Fiyatlandırma | Synora" }
+import { pricingText } from "./texts"
 
 interface PlanView {
     id: string
@@ -58,14 +60,33 @@ function safeFeatures(raw: string): string[] {
     }
 }
 
-export default async function PricingPage({
-    params,
-}: {
-    params: Promise<{ lang: string }>
-}) {
+type Props = { params: Promise<{ lang: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const rawLang = (await params).lang
+    const locale: Locale = hasLocale(rawLang) ? rawLang : "tr"
+    const t = pricingText(locale)
+    return {
+        title: "Fiyatlandırma | Synora",
+        description: t.lede,
+        alternates: localeAlternates(locale, "/pricing"),
+        openGraph: {
+            title: "Fiyatlandırma | Synora",
+            description: t.lede,
+            type: "website",
+            url: `/${locale}/pricing`,
+            siteName: "Synora",
+            locale: OG_LOCALE[locale],
+            images: [{ ...OG_IMAGE, alt: "Fiyatlandırma | Synora" }],
+        },
+    }
+}
+
+export default async function PricingPage({ params }: Props) {
     const { lang: rawLang } = await params
     if (!hasLocale(rawLang)) notFound()
     const lang = rawLang as Locale
+    const t = pricingText(lang)
     const [plans, session] = await Promise.all([loadPlans(), getSession()])
 
     let myPlanId: string | null = null
@@ -87,36 +108,17 @@ export default async function PricingPage({
     )
 
     return (
-        <div className="flex min-h-screen flex-col bg-background">
-            <header className="border-b border-border">
-                <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 md:px-8">
-                    <Link
-                        href={`/${lang}`}
-                        className="flex items-center gap-2.5 text-[15px] font-semibold tracking-[-0.01em]"
-                    >
-                        <BrandMark className="size-7" />
-                        Synora
-                    </Link>
-                    <Link
-                        href={session ? `/${lang}/dashboard` : `/${lang}/login`}
-                        className="rounded-lg px-3 py-1.5 text-[13px] text-muted-foreground hover:bg-foreground/[0.07] hover:text-foreground"
-                    >
-                        {session ? "Panelim" : "Giriş yap"}
-                    </Link>
-                </div>
-            </header>
+        <div className="site flex min-h-screen flex-col bg-canvas text-foreground">
+            <div className="border-b border-border">
+                <SiteHeader lang={lang} />
+            </div>
 
             <main className="mx-auto w-full max-w-6xl flex-1 px-5 py-12 md:px-8">
                 <div className="mx-auto max-w-2xl text-center">
                     <h1 className="text-3xl font-semibold tracking-[-0.01em]">
-                        Sizin için doğru plan
+                        {t.title}
                     </h1>
-                    <p className="mt-3 text-muted-foreground">
-                        Synora ile AI'ı gerçek draw.io tuvalinde kullanın.
-                        Ücretsiz başlayın; ihtiyacınız büyüdüğünde yükseltin.
-                        Tüm planlar Türkçe desteklidir, dilediğiniz an iptal
-                        edebilirsiniz.
-                    </p>
+                    <p className="mt-3 text-muted-foreground">{t.lede}</p>
                 </div>
 
                 <div className="mt-10 grid gap-5 md:grid-cols-3">
@@ -126,7 +128,7 @@ export default async function PricingPage({
                         return (
                             <section
                                 key={plan.id}
-                                className={`relative flex flex-col rounded-2xl border p-6 ${
+                                className={`relative flex flex-col rounded-2xl border bg-card p-6 ${
                                     highlight
                                         ? "border-foreground/60 shadow-pop"
                                         : "border-border"
@@ -134,7 +136,7 @@ export default async function PricingPage({
                             >
                                 {highlight && (
                                     <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-foreground px-3 py-1 text-[11px] font-semibold text-background">
-                                        En popüler
+                                        {t.popular}
                                     </span>
                                 )}
                                 <h2 className="text-lg font-semibold">
@@ -147,7 +149,7 @@ export default async function PricingPage({
                                             : `${(plan.priceMonthly / 100).toLocaleString("tr-TR")} ₺`}
                                     </span>
                                     <span className="text-sm text-muted-foreground">
-                                        /ay
+                                        {t.perMonth}
                                     </span>
                                 </div>
                                 {plan.description && (
@@ -160,7 +162,7 @@ export default async function PricingPage({
                                         <li key={f} className="flex gap-2">
                                             <Check
                                                 aria-hidden
-                                                className="mt-0.5 size-4 shrink-0 text-emerald-600 dark:text-emerald-400"
+                                                className="mt-0.5 size-4 shrink-0 text-success"
                                             />
                                             <span>{f}</span>
                                         </li>
@@ -169,14 +171,14 @@ export default async function PricingPage({
                                 <div className="mt-6">
                                     {isCurrent ? (
                                         <div className="rounded-lg border border-border bg-muted/50 py-2 text-center text-sm font-medium text-muted-foreground">
-                                            Mevcut planınız
+                                            {t.currentPlan}
                                         </div>
                                     ) : plan.id === "free" ? (
                                         session ? (
                                             <UpgradeButton
                                                 lang={lang}
                                                 planId="free"
-                                                label="Ücretsiz plana dön"
+                                                label={t.backToFree}
                                                 outline
                                             />
                                         ) : (
@@ -184,7 +186,7 @@ export default async function PricingPage({
                                                 href={`/${lang}/register`}
                                                 className="block w-full rounded-lg border border-border px-4 py-2 text-center text-sm font-medium hover:bg-foreground/[0.06]"
                                             >
-                                                Ücretsiz başla
+                                                {t.startFree}
                                             </Link>
                                         )
                                     ) : (
@@ -193,8 +195,8 @@ export default async function PricingPage({
                                             planId={plan.id}
                                             label={`${
                                                 myPlanId === "free"
-                                                    ? "Yükselt"
-                                                    : "Bu planı seç"
+                                                    ? t.upgrade
+                                                    : t.choose
                                             } — ${plan.name}`}
                                         />
                                     )}
@@ -205,16 +207,11 @@ export default async function PricingPage({
                 </div>
 
                 <p className="mx-auto mt-10 max-w-2xl text-center text-xs text-muted-foreground">
-                    Ödemeler iyzico altyapısı ile 3D Secure üzerinden alınır.
-                    Faturalar e-posta ile iletilir. Plan değişiklikleri bir
-                    sonraki dönemde işler. Kurumsal ihtiyaçlar için satış ile
-                    iletişime geçin.
+                    {t.note}
                 </p>
             </main>
 
-            <footer className="pb-6 text-center text-xs text-muted-foreground">
-                © {new Date().getFullYear()} Synora
-            </footer>
+            <SiteFooter lang={lang} path="/pricing" />
         </div>
     )
 }

@@ -282,7 +282,7 @@ function ProviderDetail({
                                                 className={cn(
                                                     "flex items-center gap-1 text-xs",
                                                     result.ok
-                                                        ? "text-green-600 dark:text-green-400"
+                                                        ? "text-success"
                                                         : "text-destructive",
                                                 )}
                                             >
