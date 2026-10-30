@@ -61,7 +61,7 @@ export interface AuthTexts {
     logoutWorking: string
     loginRequired: string
     featuresList: string
-    comingSoonDiagrams: string
+    usageHint: string
     myDiagrams: string
 }
 
@@ -127,8 +127,8 @@ const tr: AuthTexts = {
     logoutWorking: "Çıkış yapılıyor…",
     loginRequired: "Bu sayfayı görmek için giriş yapmalısınız.",
     featuresList: "Dahil olanlar",
-    comingSoonDiagrams:
-        "Diyagram yönetimi bir sonraki aşamada burada gelecek: diyagramlarınızı bulutta kaydedin, düzenleyin ve paylaşın.",
+    usageHint:
+        "Editörde 'Buluta kaydet' düğmesiyle sakladığınız diyagramlar aşağıda listelenir; AI istekleriniz plan kotasından düşülür.",
     myDiagrams: "Diyagramlarım",
 }
 
@@ -193,8 +193,8 @@ const en: AuthTexts = {
     logoutWorking: "Signing out…",
     loginRequired: "You need to sign in to view this page.",
     featuresList: "Included",
-    comingSoonDiagrams:
-        "Diagram management arrives here in the next phase: save, edit and share your diagrams in the cloud.",
+    usageHint:
+        "Diagrams you save with 'Save to cloud' in the editor are listed below; your AI requests count against the plan quota.",
     myDiagrams: "My diagrams",
 }
 

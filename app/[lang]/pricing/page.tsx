@@ -167,8 +167,12 @@ export default async function PricingPage({
                                     ))}
                                 </ul>
                                 <div className="mt-6">
-                                    {plan.id === "free" ? (
-                                        session && myPlanId !== "free" ? (
+                                    {isCurrent ? (
+                                        <div className="rounded-lg border border-border bg-muted/50 py-2 text-center text-sm font-medium text-muted-foreground">
+                                            Mevcut planınız
+                                        </div>
+                                    ) : plan.id === "free" ? (
+                                        session ? (
                                             <UpgradeButton
                                                 lang={lang}
                                                 planId="free"
@@ -195,11 +199,6 @@ export default async function PricingPage({
                                         />
                                     )}
                                 </div>
-                                {isCurrent && (
-                                    <p className="mt-2 text-center text-xs font-medium text-emerald-700 dark:text-emerald-400">
-                                        Mevcut planınız
-                                    </p>
-                                )}
                             </section>
                         )
                     })}

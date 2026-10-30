@@ -342,7 +342,7 @@ export default async function DashboardPage({
                             </div>
                         </div>
                         <p className="mt-4 text-xs text-muted-foreground">
-                            {t.comingSoonDiagrams}
+                            {t.usageHint}
                         </p>
                     </section>
                 </div>
