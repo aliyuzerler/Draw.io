@@ -1,2 +1,20 @@
+# Güvenlik başlıkları (tüm yollar; Cloudflare Pages / EdgeOne dağıtımları)
+# Not: next.config.ts'teki headers() Next.js sunucuları (Vercel, Docker
+# standalone) için geçerlidir; bu dosya CDN tabanlı dağıtımlar içindir.
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), usb=(), hid=(), serial=(), payment=(), interest-cohort=()
+  Strict-Transport-Security: max-age=63072000; includeSubDomains
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self'; frame-src 'self'; worker-src 'self' blob:; media-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+
+# Sürümlenmiş draw.io paketi: ömür boyu önbellek
+/drawio/*
+  Cache-Control: public,max-age=31536000,immutable
+
+/gallery/*
+  Cache-Control: public,max-age=604800,stale-while-revalidate=86400
+
 /_next/static/*
   Cache-Control: public,max-age=31536000,immutable

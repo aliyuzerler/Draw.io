@@ -1,3 +1,4 @@
+import { rejectCrossSite } from "@/lib/access-code"
 import { dbNotConfigured, jsonError, requireSession } from "@/lib/auth/api"
 import { clientIpOf, rateLimit } from "@/lib/auth/rate-limit"
 import { db } from "@/lib/db"
@@ -27,6 +28,8 @@ export async function GET(req: Request) {
 
 /** POST /api/diagrams — { title?, xml } yeni kayıt (plan sınırına tabi) */
 export async function POST(req: Request) {
+    const crossSite = rejectCrossSite(req)
+    if (crossSite) return crossSite
     const session = await requireSession(req)
     if (!session) return jsonError("Bu işlem için giriş yapmalısınız.", 401)
     const noDb = dbNotConfigured()
@@ -47,16 +50,20 @@ export async function POST(req: Request) {
     if (!xml || xml.length > 5_000_000) {
         return jsonError("Diyagram içeriği boş veya çok büyük.", 400)
     }
+    if (typeof body.title !== "undefined" && typeof body.title !== "string") {
+        return jsonError("Geçersiz başlık.", 400)
+    }
     const title = (body.title || "").trim().slice(0, 120) || "İsimsiz Diyagram"
 
     try {
+        // Plan aramasını kullanıcı sorgusuyla birleştir (tek gidiş-dönüş)
         const user = await db.user.findUnique({
             where: { id: session.sub },
-            select: { planId: true },
+            select: {
+                plan: { select: { id: true, name: true, maxDiagrams: true } },
+            },
         })
-        const plan = user
-            ? await db.plan.findUnique({ where: { id: user.planId } })
-            : null
+        const plan = user?.plan ?? null
         if (plan && plan.maxDiagrams >= 0) {
             const count = await db.diagram.count({
                 where: { userId: session.sub },

@@ -22,7 +22,7 @@ export interface SettingDef {
     max?: number
     placeholder?: string
     // Built-in default applied at runtime when the value is unset, so the UI
-    // can reflect actual behavior (e.g. ALLOW_PRIVATE_URLS defaults to "true").
+    // can reflect actual behavior (e.g. ALLOW_PRIVATE_URLS defaults to "false").
     default?: string
     // Value is only picked up at process start (module-load readers)
     restartRequired?: boolean
@@ -128,9 +128,9 @@ export const SETTINGS_REGISTRY: SettingDef[] = [
         type: "boolean",
         label: "Allow Private URLs",
         description:
-            "Turn off to block requests to private IPs and internal hostnames (SSRF protection).",
-        // Unset means allowed at runtime (ssrf-protection: !== "false")
-        default: "true",
+            "Turn on to allow requests to private IPs and internal hostnames (e.g. Ollama on localhost). Off by default (SSRF protection).",
+        // Unset means blocked at runtime (ssrf-protection: === "true")
+        default: "false",
     },
 
     // ── Observability ────────────────────────────────────────────────

@@ -13,8 +13,24 @@ export function PromoVideo({ label }: { label: string }) {
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
             return
         }
-        // A browser may refuse to start it; the controls stay there
-        video.current?.play().catch(() => {})
+        // Performans: yalnızca görünürken oynat/pause (~2MB video ilk
+        // yüklemede tamamen indirilmez)
+        const el = video.current
+        if (!el) return
+        const observer = new IntersectionObserver(
+            (entries) => {
+                for (const entry of entries) {
+                    if (entry.isIntersecting) {
+                        el.play().catch(() => {})
+                    } else {
+                        el.pause()
+                    }
+                }
+            },
+            { threshold: 0.4 },
+        )
+        observer.observe(el)
+        return () => observer.disconnect()
     }, [])
     return (
         <video

@@ -20,6 +20,9 @@ model User {
     planId        String    @default("free")
     status        String    @default("ACTIVE") // ACTIVE | SUSPENDED
     emailVerified DateTime?
+    // Bu andan önce verilmiş (iat) oturumlar geçersiz sayılır; şifre
+    // değişimi/sıfırlamada güncellenir
+    sessionsInvalidatedAt DateTime?
     lastLoginAt   DateTime?
     createdAt     DateTime  @default(now())
     updatedAt     DateTime  @updatedAt

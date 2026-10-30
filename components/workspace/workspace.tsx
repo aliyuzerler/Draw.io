@@ -1,12 +1,12 @@
 "use client"
 
 import { MessageSquare, PanelRightOpen, Settings, Shapes } from "lucide-react"
+import dynamic from "next/dynamic"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import { CloudSaveButton } from "@/components/auth/cloud-save-button"
 import { UserMenu } from "@/components/auth/user-menu"
 import { CanvasStage } from "@/components/canvas/canvas-stage"
-import { CompareDialog } from "@/components/canvas/compare-dialog"
 import { useLocale } from "@/components/canvas/locale-context"
 import { SelectionAsk } from "@/components/canvas/selection-ask"
 import {
@@ -16,8 +16,6 @@ import {
 import { ChatPanel } from "@/components/chat/chat-panel"
 import { ChatVersionsProvider } from "@/components/chat/chat-versions"
 import { LobbyHero } from "@/components/chat/lobby-hero"
-import { SaveDialog } from "@/components/save-dialog"
-import { SettingsDialog } from "@/components/settings-dialog"
 import { BrandMark } from "@/components/workspace/brand-mark"
 import { DocsButton } from "@/components/workspace/docs-button"
 import { IconButton } from "@/components/workspace/icon-button"
@@ -35,6 +33,19 @@ import { useVersionsStore } from "@/stores/versions-store"
 
 /** File types the "Open .drawio file" picker accepts */
 const DIAGRAM_FILE_ACCEPT = ".drawio,.xml,.svg,application/xml,image/svg+xml"
+
+// Performans denetimi #4: diyaloglar kapalıyken de ilk yükleme paketinde
+// taşınıyordu (SettingsDialog + ModelConfigDialog ~100KB+). Yalnızca
+// açıldıklarında indirilirler.
+const SettingsDialog = dynamic(() =>
+    import("@/components/settings-dialog").then((m) => m.SettingsDialog),
+)
+const CompareDialog = dynamic(() =>
+    import("@/components/canvas/compare-dialog").then((m) => m.CompareDialog),
+)
+const SaveDialog = dynamic(() =>
+    import("@/components/save-dialog").then((m) => m.SaveDialog),
+)
 
 const MOBILE_BREAKPOINT = 768
 // Gap between the floating panel and the window edge
@@ -139,16 +150,17 @@ function WorkspaceLayout() {
     const { chartXML, saveDiagramToFile } = useDiagram()
     const isMobile = useIsMobile()
     const panelWidth = usePanelWidth()
-    const {
-        panelOpen,
-        togglePanel,
-        setPanelOpen,
-        mobileView,
-        setMobileView,
-        focusComposer,
-        saveDialogOpen,
-        setSaveDialogOpen,
-    } = useUiStore()
+    // Performans denetimi #7: tüm mağaza aboneliği, herhangi bir UI bayrağı
+    // değiştiğinde tüm düzen ağacını yeniden render ediyordu; alan seçicileri
+    // yalnızca gerçekten kullanılan alanları dinler
+    const panelOpen = useUiStore((s) => s.panelOpen)
+    const togglePanel = useUiStore((s) => s.togglePanel)
+    const setPanelOpen = useUiStore((s) => s.setPanelOpen)
+    const mobileView = useUiStore((s) => s.mobileView)
+    const setMobileView = useUiStore((s) => s.setMobileView)
+    const focusComposer = useUiStore((s) => s.focusComposer)
+    const saveDialogOpen = useUiStore((s) => s.saveDialogOpen)
+    const setSaveDialogOpen = useUiStore((s) => s.setSaveDialogOpen)
     const heroDismissed = useUiStore((s) => s.heroDismissed)
     const setHeroDismissed = useUiStore((s) => s.setHeroDismissed)
     const fileInputRef = useRef<HTMLInputElement>(null)

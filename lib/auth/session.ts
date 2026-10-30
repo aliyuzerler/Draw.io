@@ -15,6 +15,8 @@ export interface SessionPayload {
     email: string
     name: string | null
     role: string
+    /** Tokenın verildiği zaman (unix sn) — oturum invalidasyonu için */
+    iat?: number
 }
 
 function secretKey(): Uint8Array {
@@ -59,6 +61,7 @@ export async function verifySessionToken(
                     ? payload.name
                     : null,
             role: typeof payload.role === "string" ? payload.role : "USER",
+            iat: typeof payload.iat === "number" ? payload.iat : undefined,
         }
     } catch {
         return null

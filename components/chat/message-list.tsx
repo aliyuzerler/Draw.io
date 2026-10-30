@@ -14,7 +14,7 @@ import {
     ThumbsDown,
     ThumbsUp,
 } from "lucide-react"
-import { useEffect, useRef, useState } from "react"
+import { memo, useEffect, useRef, useState } from "react"
 import ReactMarkdown from "react-markdown"
 import { toast } from "sonner"
 import { Reasoning } from "@/components/ai-elements/reasoning"
@@ -153,7 +153,10 @@ function MessageText({ text }: { text: string }) {
     )
 }
 
-function UserMessage({
+// Performans denetimi #8: akış sırasında liste her parçada yeniden
+// render edilir; memoize edilmiş satırlar yalnızca kendi mesajı değişince
+// güncellenir (uzun konuşmalarda büyük fark)
+const UserMessage = memo(function UserMessage({
     message,
     index,
     isLast,
@@ -327,9 +330,9 @@ function UserMessage({
             )}
         </div>
     )
-}
+})
 
-function AssistantMessage({
+const AssistantMessage = memo(function AssistantMessage({
     message,
     index,
     isLastMessage,
@@ -531,7 +534,7 @@ function AssistantMessage({
             )}
         </div>
     )
-}
+})
 
 /**
  * A failed request: what to do in the text color, the provider's own words

@@ -282,6 +282,7 @@ describe("the chat route", () => {
     })
 
     it("ignores it on an endpoint of the server's network", async () => {
+        vi.stubEnv("ALLOW_PRIVATE_URLS", "true")
         const body = await sentBody({
             "x-ai-provider": "deepseek",
             "x-ai-base-url": "http://127.0.0.1:9000/v1",

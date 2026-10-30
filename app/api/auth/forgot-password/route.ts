@@ -65,20 +65,38 @@ export async function POST(req: Request) {
                 },
             })
 
-            const origin =
-                process.env.NEXT_PUBLIC_SITE_URL ||
-                new URL(req.url).origin.replace(/\/$/, "")
-            resetUrl = `${origin}/${lang}/reset-password?token=${token}`
-
-            const mail = await sendMail(
-                email,
-                "Synora — Şifre sıfırlama bağlantınız",
-                passwordResetEmailHtml(resetUrl),
-            )
-            if (!mail.sent) {
-                console.log(
-                    `[Synora] E-posta sağlayıcısı yok. ${email} için sıfırlama bağlantısı: ${resetUrl}`,
+            // Origin: üretimde yalnızca güvenilir, ortamdan gelen adres.
+            // req.url origin'i Host başlığından türetilir; saldırganın Host
+            // değeri e-postadaki bağlantıyı kendi alanına çevirebilir (Host
+            // header poisoning). Bu yüzden üretimde NEXT_PUBLIC_SITE_URL
+            // zorunludur.
+            let origin: string | undefined
+            if (process.env.NEXT_PUBLIC_SITE_URL) {
+                origin = process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "")
+            } else if (process.env.NODE_ENV !== "production") {
+                origin = new URL(req.url).origin.replace(/\/$/, "")
+            }
+            if (origin) {
+                resetUrl = `${origin}/${lang}/reset-password?token=${token}`
+            } else {
+                console.error(
+                    "[Synora] Şifre sıfırlama: NEXT_PUBLIC_SITE_URL tanımlı değil; bağlantı üretilemedi. Üretimde bu değişkeni ayarlayın.",
                 )
+            }
+
+            if (resetUrl) {
+                const mail = await sendMail(
+                    email,
+                    "Synora — Şifre sıfırlama bağlantınız",
+                    passwordResetEmailHtml(resetUrl),
+                )
+                if (!mail.sent) {
+                    // Token içermez: bağlantı yalnızca talep sahibinin
+                    // e-postasına gider, günlüğe yazmak sızdırıdır
+                    console.log(
+                        `[Synora] E-posta sağlayıcısı yok. ${email} için sıfırlama bağlantısı üretildi (gönderilemedi).`,
+                    )
+                }
             }
         }
     } catch (err) {

@@ -144,6 +144,9 @@ describe("provider error texts in the stream", () => {
 describe("the output cap", () => {
     it("holds for the server's own keyless endpoints too", async () => {
         vi.stubEnv("MAX_OUTPUT_TOKENS", "8000")
+        // Self-host: yerel anahtarsız uç nokta (güvenli varsayımda özel
+        // adresler kapalıdır)
+        vi.stubEnv("ALLOW_PRIVATE_URLS", "true")
         const sent: string[] = []
         vi.stubGlobal(
             "fetch",

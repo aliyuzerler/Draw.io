@@ -21,7 +21,6 @@ const instrumentSans = Instrument_Sans({
     weight: ["400", "500", "600", "700"],
     // Chinese and Japanese text falls through to system fonts, in the
     // order globals.css picks for the page's language
-    fallback: [],
 })
 
 const jetbrainsMono = JetBrains_Mono({
@@ -167,7 +166,11 @@ export default async function RootLayout({
                 </Script>
                 <script
                     type="application/ld+json"
-                    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                    dangerouslySetInnerHTML={{
+                        // "<" kaçışı: JSON-LD gövdesinde </script> açılışı
+                        // engellenir (XSS derinlemesine savunma)
+                        __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+                    }}
                 />
             </head>
             <body

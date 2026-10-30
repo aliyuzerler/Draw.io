@@ -64,6 +64,18 @@ export async function PATCH(req: Request) {
         }
     }
 
+    // Son yönetici korunmalı: çağıran oturum mu yoksa şifre akışı mı
+    // bilinmeksizin, sistemde tek ADMIN kalmasın
+    const demote = (role && role !== "ADMIN") || status === "SUSPENDED"
+    if (demote) {
+        const lastAdmin = await isLastAdmin(id)
+        if (lastAdmin)
+            return jsonError(
+                "Sistemdeki son yönetici değiştirilemez. Önce başka bir kullanıcıya yönetici yetkisi verin.",
+                400,
+            )
+    }
+
     try {
         const user = await db.user.update({
             where: { id },
@@ -95,6 +107,13 @@ export async function DELETE(req: Request) {
         return jsonError("Kendi hesabınızı silemezsiniz.", 400)
     }
 
+    if (await isLastAdmin(id)) {
+        return jsonError(
+            "Sistemdeki son yönetici silinemez. Önce başka bir kullanıcıya yönetici yetkisi verin.",
+            400,
+        )
+    }
+
     try {
         await db.user.delete({ where: { id } })
         return Response.json({ ok: true })
@@ -105,7 +124,20 @@ export async function DELETE(req: Request) {
 
 /** Çağıranın oturumunu döner (yalnızca ADMIN ise); şifre akışında null */
 async function requireAdminCaller(req: Request) {
-    const { getSessionFromRequest } = await import("@/lib/auth/session")
-    const session = await getSessionFromRequest(req)
+    const { getSessionFromRequestVerified } = await import(
+        "@/lib/auth/session-server"
+    )
+    const session = await getSessionFromRequestVerified(req)
     return session?.role === "ADMIN" ? session : null
+}
+
+/** Hedef ADMIN ve sistemdeki tek yöneticiyse true (silmek/rol düşürmek yasak) */
+async function isLastAdmin(id: string): Promise<boolean> {
+    const target = await db.user.findUnique({
+        where: { id },
+        select: { role: true },
+    })
+    if (target?.role !== "ADMIN") return false
+    const adminCount = await db.user.count({ where: { role: "ADMIN" } })
+    return adminCount <= 1
 }

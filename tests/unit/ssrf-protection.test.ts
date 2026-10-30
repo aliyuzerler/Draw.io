@@ -94,7 +94,9 @@ describe("redirectGuardedFetch with the quota on", () => {
                 : [],
         )
         vi.stubEnv("DYNAMODB_QUOTA_TABLE", "quota")
-        vi.stubEnv("ALLOW_PRIVATE_URLS", undefined)
+        // Güvenli varsayım: özel URL'ler artık kapalı; bu grup kota
+        // yönlendirme davranışını "özel URL'lere izin verilmişken" test eder
+        vi.stubEnv("ALLOW_PRIVATE_URLS", "true")
     })
 
     afterEach(() => {

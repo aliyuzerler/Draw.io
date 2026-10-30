@@ -54,7 +54,12 @@ export async function POST(req: Request) {
         await db.$transaction([
             db.user.update({
                 where: { id: record.userId },
-                data: { passwordHash: await hashPassword(password) },
+                data: {
+                    passwordHash: await hashPassword(password),
+                    // Şifre değişti: eski oturumlar (çalınmış çerez dahi)
+                    // düşsün
+                    sessionsInvalidatedAt: new Date(),
+                },
             }),
             db.passwordResetToken.update({
                 where: { id: record.id },

@@ -7,5 +7,10 @@ export const dynamic = "force-dynamic"
 
 export async function GET() {
     const models = await loadFlattenedServerModels()
-    return NextResponse.json({ models })
+    // Sunucu tarafı bilgi sızıntısı engeli: anahtar/temel-URL ortam
+    // değişkeni ADLARI istemciye gönderilmez (değerler zaten asla gitmez).
+    // Model seçimi için id/modelId/provider/label/default yeterlidir;
+    // çözümleme sunucuda findServerModelById ile yapılır.
+    const safeModels = models.map(({ apiKeyEnv, baseUrlEnv, ...rest }) => rest)
+    return NextResponse.json({ models: safeModels })
 }

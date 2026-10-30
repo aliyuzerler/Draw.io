@@ -1,3 +1,4 @@
+import { rejectCrossSite } from "@/lib/access-code"
 import { checkAdminAuth } from "@/lib/admin/auth"
 import {
     AdminProviderSchema,
@@ -15,6 +16,8 @@ export const dynamic = "force-dynamic"
 // masked {isSet} markers, which are resolved against settings.json — so
 // testing works both before and after saving.
 export async function POST(req: Request) {
+    const crossSite = rejectCrossSite(req)
+    if (crossSite) return crossSite
     const authError = await checkAdminAuth(req)
     if (authError) return authError
 

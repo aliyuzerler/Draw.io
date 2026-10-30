@@ -75,6 +75,35 @@ function hasValidAccessCode(request: Request, env: any): boolean {
     return !!accessCode && accessCodes.includes(accessCode)
 }
 
+// ── IP hız sınırı (izolat başına) ─────────────────────────────────────
+// Erişim kodu yapılandırılmamışsa bile, curl ile anonim toplu kullanım
+// Edge AI kotasını tüketmesin: dakikada 20 istek/IP.
+const EDGE_RATE_LIMIT = 20
+const EDGE_WINDOW_MS = 60_000
+const edgeBuckets = new Map<string, { count: number; resetAt: number }>()
+
+function edgeRateLimit(ip: string): { ok: boolean; retryAfter: number } {
+    const now = Date.now()
+    if (edgeBuckets.size > 5000) {
+        for (const [key, bucket] of edgeBuckets) {
+            if (bucket.resetAt <= now) edgeBuckets.delete(key)
+        }
+    }
+    const bucket = edgeBuckets.get(ip)
+    if (!bucket || bucket.resetAt <= now) {
+        edgeBuckets.set(ip, { count: 1, resetAt: now + EDGE_WINDOW_MS })
+        return { ok: true, retryAfter: 0 }
+    }
+    bucket.count += 1
+    if (bucket.count > EDGE_RATE_LIMIT) {
+        return {
+            ok: false,
+            retryAfter: Math.ceil((bucket.resetAt - now) / 1000),
+        }
+    }
+    return { ok: true, retryAfter: 0 }
+}
+
 export async function onRequest({ request, env }: any) {
     // Requiring JSON also makes any cross-site browser request need a CORS
     // preflight, which fails without CORS headers. Only the type before any
@@ -104,6 +133,25 @@ export async function onRequest({ request, env }: any) {
                 },
             },
             401,
+        )
+    }
+
+    // Kota koruması: erişim kodu olsa da olmasa da IP başına sınır
+    const clientIp =
+        request.headers.get("cf-connecting-ip") ||
+        request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+        "unknown"
+    const rate = edgeRateLimit(clientIp)
+    if (!rate.ok) {
+        return createResponse(
+            {
+                error: {
+                    message: `Too many requests. Retry after ${rate.retryAfter}s`,
+                    type: "rate_limit_error",
+                },
+            },
+            429,
+            { "Retry-After": String(rate.retryAfter) },
         )
     }
 

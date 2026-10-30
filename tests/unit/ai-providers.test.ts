@@ -206,6 +206,9 @@ describe("Atlas Cloud provider", () => {
     })
 
     it("uses custom Atlas Cloud base URL when provided", () => {
+        // Güvenli varsayımda istemci seçimi uç noktaya yönlendirme koruması
+        // eklenir; bu test yalnızca baseURL geçişini doğrular
+        vi.stubEnv("ALLOW_PRIVATE_URLS", "true")
         getAIModel({
             provider: "atlascloud",
             apiKey: "client-atlas-key",

@@ -1,4 +1,6 @@
 import { z } from "zod"
+import { rejectCrossSite } from "@/lib/access-code"
+import { clientIpOf, rateLimit } from "@/lib/auth/rate-limit"
 import { getLangfuseClient, scoreLatestTrace } from "@/lib/langfuse"
 import { getUserIdFromRequest } from "@/lib/user-id"
 
@@ -9,6 +11,18 @@ const feedbackSchema = z.object({
 })
 
 export async function POST(req: Request) {
+    const crossSite = rejectCrossSite(req)
+    if (crossSite) return crossSite
+
+    // Langfuse skoru spam'e karşı hız sınırı
+    const limiter = rateLimit(`log-feedback:${clientIpOf(req)}`, 30, 60_000)
+    if (!limiter.ok) {
+        return Response.json(
+            { success: false, error: "Too many requests" },
+            { status: 429 },
+        )
+    }
+
     const langfuse = getLangfuseClient()
     if (!langfuse) {
         return Response.json({ success: true, logged: false })

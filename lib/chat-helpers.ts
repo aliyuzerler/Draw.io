@@ -227,3 +227,42 @@ export function formatSelectionContext(selectedCells: unknown): string {
 ${lines.join("\n")}
 Apply the request to the selected shapes unless it clearly asks for something else. Prefer edit_diagram with these cell ids over redrawing the whole diagram.`
 }
+
+// ── İstek gövdesi sınırları (bellek DoS koruması) ─────────────────────────
+// Sunucu, /api/chat gövdesini sınırıyla okur: Content-Length başlığıyla ya
+// da akış okunurken limit aşılırsa gövde iptal edilir.
+export const MAX_BODY_BYTES = 25 * 1024 * 1024 // 25MB (5×2MB dosya + XML + metin payı)
+export const MAX_MESSAGES = 60
+export const MAX_TOTAL_TEXT_CHARS = 500_000
+
+/**
+ * JSON gövdesini bayt sınırıyla okur. "too-large" → limit aşıldı,
+ * "invalid" → JSON bozuk, aksi halde ayrıştırılmış değer döner.
+ */
+export async function readLimitedJsonBody(
+    req: Request,
+    maxBytes: number,
+): Promise<unknown | "too-large" | "invalid"> {
+    const length = Number(req.headers.get("content-length"))
+    if (Number.isFinite(length) && length > maxBytes) return "too-large"
+    if (!req.body) return "invalid"
+    const reader = req.body.getReader()
+    const chunks: Uint8Array[] = []
+    let total = 0
+    while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        total += value.byteLength
+        if (total > maxBytes) {
+            reader.cancel().catch(() => {})
+            return "too-large"
+        }
+        chunks.push(value)
+    }
+    try {
+        const blob = new Blob(chunks as BlobPart[])
+        return JSON.parse(await blob.text())
+    } catch {
+        return "invalid"
+    }
+}

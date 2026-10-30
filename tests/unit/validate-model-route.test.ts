@@ -384,6 +384,9 @@ describe("the Test on the deployment's own endpoints", () => {
 
     it("counts as a chat request with the quota on", async () => {
         quota.enabled = true
+        // Güvenli varsayımda özel adresler kapalı; bu test "kendi uç
+        // noktaları" (self-host) senaryosunu kapsar
+        vi.stubEnv("ALLOW_PRIVATE_URLS", "true")
         // EdgeOne, and a model server on the server's network with a dummy key
         const edgeone = await test({ provider: "edgeone" })
         expect(edgeone.status).toBe(429)

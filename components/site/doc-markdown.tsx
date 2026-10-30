@@ -84,6 +84,8 @@ export function DocMarkdown({
                                 : undefined
                         }
                         alt={alt ?? ""}
+                        loading="lazy"
+                        decoding="async"
                         className="rounded-lg border border-border bg-card p-4"
                     />
                 ),

@@ -1,3 +1,5 @@
+import { timingSafeEqual } from "crypto"
+
 /**
  * Refuse a POST that a page on another website could have sent. A browser
  * sends a cross-site POST without asking first (CORS preflight) only with a
@@ -30,6 +32,7 @@ export function rejectCrossSite(req: Request): Response | null {
  * Check the x-access-code header against ACCESS_CODE_LIST.
  * Returns a 401 response to send back when the check fails, or null when the
  * request may continue (including when no access codes are configured).
+ * Comparison is timing-safe so response time cannot reveal a code prefix.
  */
 export function checkAccessCode(req: Request): Response | null {
     const accessCodes =
@@ -39,7 +42,8 @@ export function checkAccessCode(req: Request): Response | null {
     if (accessCodes.length === 0) return null
 
     const accessCodeHeader = req.headers.get("x-access-code")
-    if (accessCodeHeader && accessCodes.includes(accessCodeHeader)) return null
+    if (accessCodeHeader && timingSafeIncludes(accessCodes, accessCodeHeader))
+        return null
 
     return Response.json(
         {
@@ -47,4 +51,24 @@ export function checkAccessCode(req: Request): Response | null {
         },
         { status: 401 },
     )
+}
+
+/** Sabit zamanlı liste araması (zamanlama saldırısına kapalı) */
+export function timingSafeIncludes(list: string[], candidate: string): boolean {
+    const candidateBuf = Buffer.from(candidate)
+    let matched = false
+    const mask = Buffer.alloc(32)
+    for (const code of list) {
+        const codeBuf = Buffer.from(code)
+        if (
+            codeBuf.length === candidateBuf.length &&
+            timingSafeEqual(codeBuf, candidateBuf)
+        ) {
+            matched = true
+        } else {
+            // Uzunluk eşleşmeyen dalların da sabit maliyeti olsun
+            timingSafeEqual(mask, mask)
+        }
+    }
+    return matched
 }

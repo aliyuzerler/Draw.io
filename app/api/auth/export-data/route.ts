@@ -1,4 +1,5 @@
 import { dbNotConfigured, jsonError, requireSession } from "@/lib/auth/api"
+import { clientIpOf, rateLimit } from "@/lib/auth/rate-limit"
 import { db } from "@/lib/db"
 
 export const dynamic = "force-dynamic"
@@ -12,6 +13,12 @@ export async function GET(req: Request) {
     if (!session) return jsonError("Bu işlem için giriş yapmalısınız.", 401)
     const noDb = dbNotConfigured()
     if (noDb) return noDb
+
+    // Çalınmış oturumla toplu veri dökümünü zorlaştır (KVKK m.11)
+    const limiter = rateLimit(`export:${clientIpOf(req)}`, 5, 60_000)
+    if (!limiter.ok) {
+        return jsonError("Çok fazla istek. Birazdan tekrar deneyin.", 429)
+    }
 
     const user = await db.user.findUnique({
         where: { id: session.sub },
@@ -33,6 +40,7 @@ export async function GET(req: Request) {
                     updatedAt: true,
                 },
                 orderBy: { updatedAt: "desc" },
+                take: 200,
             },
             usageEvents: {
                 select: {

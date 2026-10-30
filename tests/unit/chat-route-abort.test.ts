@@ -15,6 +15,8 @@ vi.mock("@/lib/ssrf-protection", async (importOriginal) => ({
     ...(await importOriginal<typeof import("@/lib/ssrf-protection")>()),
     isPrivateUrl: async (url: string) =>
         /^https?:\/\/(127\.0\.0\.1|localhost)\b/.test(url),
+    // Yerel uç nokta testi: self-host senaryosu (özel adresler açık)
+    allowPrivateUrls: () => true,
 }))
 
 import { POST as chat } from "@/app/api/chat/route"

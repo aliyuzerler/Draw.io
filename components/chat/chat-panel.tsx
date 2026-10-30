@@ -7,7 +7,7 @@ import {
     PanelRightClose,
     Settings,
 } from "lucide-react"
-import { useRef } from "react"
+import { useMemo, useRef } from "react"
 import { VersionStrip } from "@/components/canvas/version-strip"
 import { DevXmlSimulator } from "@/components/dev-xml-simulator"
 import {
@@ -113,18 +113,27 @@ export function ChatPanel({
     // screenshot check (a call still running gets its card when done). The
     // strip shows them even when there is only one.
     const versions = useVersionsStore((s) => s.versions)
-    const hasCardless = versions.some(
-        (v) =>
-            !v.toolCallId ||
-            !engine.messages.some((m) =>
-                m.parts.some((p) => {
-                    const part = p as { toolCallId?: string; state?: string }
-                    return (
-                        part.toolCallId === v.toolCallId &&
-                        part.state !== "output-error"
-                    )
-                }),
+    // Performans denetimi #10: versions × messages × parts taraması her
+    // render'da değil, yalnızca girdileri değişince çalışır
+    const hasCardless = useMemo(
+        () =>
+            versions.some(
+                (v) =>
+                    !v.toolCallId ||
+                    !engine.messages.some((m) =>
+                        m.parts.some((p) => {
+                            const part = p as {
+                                toolCallId?: string
+                                state?: string
+                            }
+                            return (
+                                part.toolCallId === v.toolCallId &&
+                                part.state !== "output-error"
+                            )
+                        }),
+                    ),
             ),
+        [versions, engine.messages],
     )
 
     return (

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { rejectCrossSite } from "@/lib/access-code"
 import { dbNotConfigured, jsonError } from "@/lib/auth/api"
-import { verifyPassword } from "@/lib/auth/password"
+import { hashPassword, verifyPassword } from "@/lib/auth/password"
 import { clientIpOf, rateLimit } from "@/lib/auth/rate-limit"
 import { ensurePlans } from "@/lib/auth/seed"
 import {
@@ -10,6 +10,16 @@ import {
     signSession,
 } from "@/lib/auth/session"
 import { db } from "@/lib/db"
+
+// Zamanlama dengeleyici: bilinmeyen e-posta için de aynı bcrypt maliyetini
+// ödemek üzere başta üretilen kukla hash (lazy, tek seferlik)
+let dummyHashPromise: Promise<string> | null = null
+function DUMMY_HASH(): Promise<string> {
+    dummyHashPromise ??= hashPassword(
+        "synora-timing-equalizer-no-real-user-here",
+    )
+    return dummyHashPromise as Promise<string>
+}
 
 /** POST /api/auth/login — e-posta + şifre ile oturum açar */
 export async function POST(req: Request) {
@@ -52,7 +62,14 @@ export async function POST(req: Request) {
     try {
         await ensurePlans()
         const user = await db.user.findUnique({ where: { email } })
-        if (!user || !(await verifyPassword(password, user.passwordHash))) {
+        if (!user) {
+            // Kullanıcı sayımını zorlaştırma: gerçek bcrypt maliyetiyle
+            // kukla karşılaştırma yap (zamanlama farkı kullanıcı varlığını
+            // ele vermesin)
+            await verifyPassword(password, await DUMMY_HASH())
+            return jsonError("E-posta veya şifre hatalı.", 401)
+        }
+        if (!(await verifyPassword(password, user.passwordHash))) {
             return jsonError("E-posta veya şifre hatalı.", 401)
         }
         if (user.status === "SUSPENDED") {

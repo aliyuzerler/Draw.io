@@ -118,6 +118,11 @@ export function saveSettings(updates: Record<string, string | null>): void {
 
     state.cachedSettings = current
     applyToEnv()
+    // Sunucu modeli yapılandırması (ai-models.json birleşimi) değişti:
+    // 30 sn TTL önbelleğini hemen düşür
+    import("../server-model-config")
+        .then((m) => m.invalidateRawServerModelsCache())
+        .catch(() => {})
 }
 
 let writableCache: boolean | null = null

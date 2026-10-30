@@ -1,6 +1,9 @@
 import { checkAdminAuth } from "@/lib/admin/auth"
 
+import { db } from "@/lib/db"
+
 import { getSessionFromRequest, type SessionPayload } from "./session"
+import { getSessionFromRequestVerified } from "./session-server"
 
 /** Tutarlı JSON hata yanıtı */
 export function jsonError(
@@ -33,9 +36,23 @@ export async function requireSession(
  * Yetkisizse gönderilecek yanıtı, yetkiliyse null döndürür.
  */
 export async function requireAdmin(req: Request): Promise<Response | null> {
-    const session = await getSessionFromRequest(req)
-    if (session?.role === "ADMIN") return null
-    const passwordResponse = checkAdminAuth(req)
-    if (!passwordResponse) return null
-    return jsonError("Bu işlem için yönetici yetkisi gerekir.", 401)
+    // Doğrulanmış oturum: JWT imzası + sessionsInvalidatedAt denetimi
+    const session = await getSessionFromRequestVerified(req)
+    if (session?.role === "ADMIN") {
+        // JWT'deki rol bayatlamış olabilir; DB'de güncel rol/durumu doğrula
+        if (!process.env.DATABASE_URL) return null
+        try {
+            const user = await db.user.findUnique({
+                where: { id: session.sub },
+                select: { role: true, status: true },
+            })
+            if (user?.role === "ADMIN" && user?.status === "ACTIVE") return null
+            return jsonError("Bu işlem için yönetici yetkisi gerekir.", 401)
+        } catch {
+            // DB hatasında oturum yoluyla yetki verme; şifre akışına düş
+        }
+    }
+    // Şifre akışı: checkAdminAuth'ın yanını (401/403/429) olduğu gibi
+    // dön — 429 hız sınırı yanıtı ezilmesin
+    return await checkAdminAuth(req)
 }

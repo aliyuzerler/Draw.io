@@ -147,6 +147,49 @@ export async function loadEnvServerModelsConfig(): Promise<ServerModelsConfig | 
 }
 
 export async function loadRawServerModelsConfig(): Promise<ServerModelsConfig | null> {
+    // Performans: bu yol her /api/chat ve /api/server-models isteğinde
+    // çalışır; fs + zod + dinamik import maliyeti TTL önbellekle tek
+    // seferlik olur. Önbellek, yapılandırmayı etkileyen ortam
+    // değişkenlerinin imzasına bağlıdır: env değişimi (testler dahil)
+    // önbelleği anında geçersiz kılar. Admin paneli yazımları
+    // invalidateRawServerModelsCache() ile düşürür.
+    const signature = [
+        process.env.AI_MODELS_CONFIG ?? "",
+        process.env.AI_MODELS_CONFIG_PATH ?? "",
+        process.env.AI_MODEL ?? "",
+        process.env.AI_PROVIDER ?? "",
+    ].join("|")
+    const now = Date.now()
+    if (
+        rawConfigCache.value !== null &&
+        rawConfigCache.signature === signature &&
+        now - rawConfigCache.loadedAt < RAW_CONFIG_CACHE_TTL_MS
+    ) {
+        return rawConfigCache.value
+    }
+
+    const config = await computeRawServerModelsConfig()
+    rawConfigCache.value = config
+    rawConfigCache.signature = signature
+    rawConfigCache.loadedAt = now
+    return config
+}
+
+/** Admin paneli bir yapılandırma yazdığında önbelleği düşürür */
+export function invalidateRawServerModelsCache(): void {
+    rawConfigCache.value = null
+    rawConfigCache.signature = ""
+    rawConfigCache.loadedAt = 0
+}
+
+const RAW_CONFIG_CACHE_TTL_MS = 30_000
+const rawConfigCache: {
+    value: ServerModelsConfig | null
+    signature: string
+    loadedAt: number
+} = { value: null, signature: "", loadedAt: 0 }
+
+async function computeRawServerModelsConfig(): Promise<ServerModelsConfig | null> {
     const envConfig = await loadEnvServerModelsConfig()
 
     // Merge in providers managed via the admin panel (settings.json).

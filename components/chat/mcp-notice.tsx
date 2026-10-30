@@ -28,12 +28,29 @@ function useVideoClosed() {
 
 function PromoVideo({ className }: { className?: string }) {
     const video = useRef<HTMLVideoElement>(null)
-    // Plays by itself only when the system does not ask for reduced motion
+    // Performans denetimi #9: ~2MB video ilk ekranda otomatik oynatılmıyor;
+    // kart görünür olunca (IntersectionObserver) başlar. Reduced-motion
+    // isteği yine önceliklidir.
     useEffect(() => {
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
             return
         }
-        video.current?.play().catch(() => {})
+        const el = video.current
+        if (!el) return
+        const observer = new IntersectionObserver(
+            (entries) => {
+                for (const entry of entries) {
+                    if (entry.isIntersecting) {
+                        el.play().catch(() => {})
+                    } else {
+                        el.pause()
+                    }
+                }
+            },
+            { threshold: 0.4 },
+        )
+        observer.observe(el)
+        return () => observer.disconnect()
     }, [])
     return (
         <video

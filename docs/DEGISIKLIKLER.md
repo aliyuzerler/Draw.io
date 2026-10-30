@@ -13,6 +13,7 @@ Bu belge, SaaS dönüşümü kapsamında yapılan tüm değişiklikleri **ekran 
 | Faz 5 | *(bu commit)* | **Arayüz uyum paketi:** tüm SaaS sayfaları SiteHeader/SiteFooter iskeletine bağlandı; tema + dil menüleri, `--success` token'ları, SEO metadata | 1–5, 9–11, 13, 14 |
 
 Tüm sayfalar yerel geliştirme ortamında (`SQLite` + `next dev`) gerçek oturum açılıp gerçek verilerle gezilerek doğrulandı; **921 birim testin tamamı geçer**.
+| Güvenlik | *(bu commit)* | **Uçtan uca güvenlik + performans denetimi:** npm audit 20→0 (Next 16.4.3 kritik RCE dahil), SSRF güvenli varsayılan, admin/kimlik sertleştirmesi, CSP+HSTS başlıkları, oturum invalidasyonu; detay: [`docs/tr/guvenlik-optimizasyonu.md`](./tr/guvenlik-optimizasyonu.md) | — |
 
 ---
 

@@ -1,3 +1,4 @@
+import { rejectCrossSite } from "@/lib/access-code"
 import { dbNotConfigured, jsonError, requireSession } from "@/lib/auth/api"
 import { db } from "@/lib/db"
 
@@ -56,12 +57,18 @@ export async function PATCH(
     if (body.xml !== undefined && (!body.xml || body.xml.length > 5_000_000)) {
         return jsonError("Diyagram içeriği boş veya çok büyük.", 400)
     }
+    if (
+        body.title !== undefined &&
+        (typeof body.title !== "string" || body.title.trim().length === 0)
+    ) {
+        return jsonError("Geçersiz başlık.", 400)
+    }
 
     try {
-        const existing = await ownDiagram(id, session.sub)
-        if (!existing) return jsonError("Diyagram bulunamadı.", 404)
-        const diagram = await db.diagram.update({
-            where: { id: existing.id },
+        // updateMany sahiplik koşuluyla tek gidiş-dönüş: yarış güvenli ve
+        // başkasının diyagramına dokunamaz
+        const result = await db.diagram.updateMany({
+            where: { id, userId: session.sub },
             data: {
                 ...(body.title !== undefined
                     ? {
@@ -72,6 +79,10 @@ export async function PATCH(
                     : {}),
                 ...(body.xml !== undefined ? { xml: body.xml } : {}),
             },
+        })
+        if (result.count === 0) return jsonError("Diyagram bulunamadı.", 404)
+        const diagram = await db.diagram.findUnique({
+            where: { id },
             select: { id: true, title: true, updatedAt: true },
         })
         return Response.json({ diagram })
@@ -93,9 +104,11 @@ export async function DELETE(
 
     const { id } = await params
     try {
-        const existing = await ownDiagram(id, session.sub)
-        if (!existing) return jsonError("Diyagram bulunamadı.", 404)
-        await db.diagram.delete({ where: { id: existing.id } })
+        // deleteMany sahiplik koşuluyla tek gidiş-dönüş
+        const result = await db.diagram.deleteMany({
+            where: { id, userId: session.sub },
+        })
+        if (result.count === 0) return jsonError("Diyagram bulunamadı.", 404)
         return Response.json({ ok: true })
     } catch (err) {
         console.error("[Synora] Diyagram silme hatası:", err)

@@ -10,6 +10,11 @@ const SUPPORTED_IMAGE_TYPES = [
     "image/webp",
 ]
 
+// Tarayıcıda metne çıkarılan dosyalar (PDF/metin) için de üst sınır:
+// sınır yoksa GB'lık bir .txt dosyası tüm dosyayı belleğe alıp sekmeyi
+// çökertir (bellek DoS'u)
+export const MAX_EXTRACT_FILE_SIZE = 20 * 1024 * 1024 // 20MB
+
 /** Accept list for the attachment picker (.drawio files open as the diagram) */
 export const ATTACHMENT_ACCEPT =
     "image/png,image/jpeg,image/gif,image/webp,.svg,.pdf,application/pdf,text/*,.md,.markdown,.json,.csv,.xml,.yaml,.yml,.toml,.drawio"
@@ -63,15 +68,18 @@ export function validateFiles(
             )
             continue
         }
-        // PDFs and text files are extracted in the browser, so only images
-        // have a size limit
+        // Çıkarılan dosyaların (PDF/metin) da boyut sınırı var; görseller
+        // sunucuda ayrıca denetlenir
         const isExtractedFile = isPdfFile(file) || isTextFile(file)
-        if (!isExtractedFile && file.size > MAX_IMAGE_SIZE) {
+        const sizeLimit = isExtractedFile
+            ? MAX_EXTRACT_FILE_SIZE
+            : MAX_IMAGE_SIZE
+        if (file.size > sizeLimit) {
             errors.push(
                 formatMessage(dict.errors.fileExceeds, {
                     name: file.name,
                     size: formatFileSize(file.size),
-                    max: MAX_IMAGE_SIZE / 1024 / 1024,
+                    max: sizeLimit / 1024 / 1024,
                 }),
             )
         } else {

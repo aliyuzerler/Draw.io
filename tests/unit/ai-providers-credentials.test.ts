@@ -101,6 +101,10 @@ describe("Vertex AI key security", () => {
 
     it("sends the client key to the client base URL", async () => {
         process.env.GOOGLE_VERTEX_API_KEY = "server-vertex-key"
+        // İstemci kendi uç noktasını seçtiğinde yönlendirme koruması devreye
+        // girer (güvenli varsayım); bu test anahtar yönlendirmesini doğrular,
+        // korumasız eski davranış için özel URL'lere izin ver
+        vi.stubEnv("ALLOW_PRIVATE_URLS", "true")
         const { createVertex } = await import("@ai-sdk/google-vertex")
 
         getAIModel({

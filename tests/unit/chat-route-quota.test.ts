@@ -115,6 +115,9 @@ describe("chat quota", () => {
     })
 
     it("counts Ollama at a private address, the server's network", async () => {
+        // Güvenli varsayımda özel adresler kapalıdır; bu test self-host
+        // senaryosunu (ALLOW_PRIVATE_URLS=true) kapsar
+        vi.stubEnv("ALLOW_PRIVATE_URLS", "true")
         const res = await send({
             "x-ai-provider": "ollama",
             "x-ai-base-url": "http://127.0.0.1:11434/api",
@@ -126,6 +129,7 @@ describe("chat quota", () => {
 
     it("counts the server's network whatever key header comes along", async () => {
         // A keyless Ollama or a local SGLang ignores a dummy key
+        vi.stubEnv("ALLOW_PRIVATE_URLS", "true")
         for (const headers of [
             {
                 "x-ai-provider": "ollama",

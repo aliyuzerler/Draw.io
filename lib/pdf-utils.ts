@@ -1,5 +1,3 @@
-import { extractText } from "unpdf"
-
 // Maximum characters allowed for extracted text (configurable via env)
 const DEFAULT_MAX_EXTRACTED_CHARS = 150000 // 150k chars
 export const MAX_EXTRACTED_CHARS =
@@ -40,9 +38,11 @@ const TEXT_EXTENSIONS = [
 
 /**
  * Extract text content from a PDF file
- * Uses unpdf library for client-side extraction
+ * unpdf (pdf.js) is loaded lazily: the workspace bundle does not ship
+ * pdf.js (~400KB+) unless the user actually uploads a PDF.
  */
 export async function extractPdfText(file: File): Promise<string> {
+    const { extractText } = await import("unpdf")
     const buffer = await file.arrayBuffer()
     // Pass raw bytes so unpdf destroys the PDF document when it is done
     const { text } = await extractText(new Uint8Array(buffer), {

@@ -117,7 +117,17 @@ export function LoginForm({ lang }: { lang: string }) {
         })
         if (ok) {
             const next = params.get("next")
-            router.push(next?.startsWith("/") ? next : `/${lang}/dashboard`)
+            // Açık yönlendirme koruması: yalnızca aynı siteye giden göreli
+            // yollar kabul edilir ("//evil.com" ve "/\evil.com" protokole
+            // göreli saldırı biçimleridir)
+            const safeNext =
+                next &&
+                next.startsWith("/") &&
+                !next.startsWith("//") &&
+                !next.startsWith("/\\")
+                    ? next
+                    : `/${lang}/dashboard`
+            router.push(safeNext)
             router.refresh()
             return
         }

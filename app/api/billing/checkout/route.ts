@@ -1,3 +1,4 @@
+import { rejectCrossSite } from "@/lib/access-code"
 import { dbNotConfigured, jsonError, requireSession } from "@/lib/auth/api"
 import { isIyzicoConfigured } from "@/lib/billing/iyzico"
 import { db } from "@/lib/db"
@@ -13,6 +14,8 @@ export const dynamic = "force-dynamic"
  *   panelden (Kullanıcılar bölümü) plan elle atanabilir.
  */
 export async function POST(req: Request) {
+    const crossSite = rejectCrossSite(req)
+    if (crossSite) return crossSite
     const session = await requireSession(req)
     if (!session) return jsonError("Bu işlem için giriş yapmalısınız.", 401)
     const noDb = dbNotConfigured()

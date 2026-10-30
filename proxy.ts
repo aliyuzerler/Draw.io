@@ -28,7 +28,8 @@ export async function proxy(request: NextRequest) {
         // adds this header. A call straight to the origin could fake the
         // CLIENT_IP_HEADER and get a fresh quota for every made-up IP.
         const secret = process.env.ORIGIN_SECRET
-        if (secret && request.headers.get("x-origin-secret") !== secret) {
+        const provided = request.headers.get("x-origin-secret") || ""
+        if (secret && !timingSafeStringEqual(provided, secret)) {
             return NextResponse.json({ error: "Forbidden" }, { status: 403 })
         }
         return
@@ -92,9 +93,26 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-    // API routes (for ORIGIN_SECRET), and pages without `/_next/` assets
+    // API routes (for ORIGIN_SECRET), pages without `/_next/` assets, and
+    // not the pinned draw.io bundle (large tree of static files; the edge
+    // invocation would only run per asset request for nothing)
     matcher: [
         "/api/:path*",
-        "/((?!api|_next/static|_next/image|favicon.ico).*)",
+        "/((?!api|_next/static|_next/image|favicon.ico|drawio(?:$|/)).*)",
     ],
+}
+
+/**
+ * Sabit zamanlı dize karşılaştırması (edge uyumlu, bağımlılıksız).
+ * Uzunluk farkı da XOR'a katılır: yanıt süresi gizliyi ele vermez.
+ */
+function timingSafeStringEqual(a: string, b: string): boolean {
+    const ab = new TextEncoder().encode(a)
+    const bb = new TextEncoder().encode(b)
+    const len = Math.max(ab.length, bb.length)
+    let diff = ab.length ^ bb.length
+    for (let i = 0; i < len; i++) {
+        diff |= (ab[i] ?? 0) ^ (bb[i] ?? 0)
+    }
+    return diff === 0
 }

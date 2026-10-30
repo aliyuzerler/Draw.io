@@ -6,6 +6,7 @@ import {
     useCallback,
     useContext,
     useEffect,
+    useMemo,
     useRef,
     useState,
 } from "react"
@@ -188,20 +189,24 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
     // Sends a full load. draw.io runs it when its message arrives, and then
     // reports "load": until then the editor shows the diagram from before,
     // so later changes go the same way and keep their order
-    const fullLoad = (
-        xml: string,
-        pageId: string | null = useCanvasStore.getState().currentPageId,
-        fit = false,
-    ) => {
-        if (!drawioRef.current) return
-        pageAfterLoadRef.current =
-            pageId && xml.includes(`id="${pageId}"`) ? pageId : null
-        fitAfterLoadRef.current = fit
-        pendingLoadsRef.current++
-        drawioRef.current.load({ xml })
-    }
+    // (refs + modül importları: sabit kimlik — performans denetimi #2)
+    const fullLoad = useCallback(
+        (
+            xml: string,
+            pageId: string | null = useCanvasStore.getState().currentPageId,
+            fit = false,
+        ) => {
+            if (!drawioRef.current) return
+            pageAfterLoadRef.current =
+                pageId && xml.includes(`id="${pageId}"`) ? pageId : null
+            fitAfterLoadRef.current = fit
+            pendingLoadsRef.current++
+            drawioRef.current.load({ xml })
+        },
+        [],
+    )
 
-    const onDrawioLoad = () => {
+    const onDrawioLoad = useCallback(() => {
         pendingLoadsRef.current = Math.max(0, pendingLoadsRef.current - 1)
         // Back to the page the user was on, once the last load sent is on
         // the canvas: the page belongs to that load (an earlier one that
@@ -226,20 +231,20 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
         // Restore diagram after remount (e.g., theme/UI change), or a file
         // opened while draw.io loaded (its page settings count too)
         if (chartXMLRef.current) fullLoad(chartXMLRef.current, undefined, true)
-    }
+    }, [fullLoad])
 
-    const resetDrawioReady = () => {
+    const resetDrawioReady = useCallback(() => {
         hasCalledOnLoadRef.current = false
         pendingLoadsRef.current = 0
         setIsDrawioReady(false)
-    }
+    }, [])
 
     // Update chartXML and its ref together, so callbacks that read the ref
     // (export handler, autosave) see the new value right away
-    const updateChartXML = (xml: string) => {
+    const updateChartXML = useCallback((xml: string) => {
         chartXMLRef.current = xml
         setChartXML(xml)
-    }
+    }, [])
 
     // Export with a tag in `message` (draw.io echoes it back in the export
     // event) and wait for that result. Resolves to null on timeout, which is
@@ -279,14 +284,16 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
     }, [requestTaggedExport])
 
     // Plain SVG (no embedded diagram data) for version cards
-    const getVersionSvg = async (): Promise<string | null> => {
+    const getVersionSvg = useCallback(async (): Promise<string | null> => {
         if (!drawioRef.current) return null
         const result = await requestTaggedExport("version", "svg", 4000)
         return result?.data?.startsWith("data:image/svg") ? result.data : null
-    }
+    }, [requestTaggedExport])
 
     // Capture current diagram as PNG for VLM validation
-    const captureValidationPng = async (): Promise<string | null> => {
+    const captureValidationPng = useCallback(async (): Promise<
+        string | null
+    > => {
         if (!drawioRef.current) return null
         // Don't export if diagram is empty
         if (!isRealDiagram(chartXMLRef.current)) return null
@@ -294,7 +301,7 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
         const result = await requestTaggedExport("validation", "png", 5000)
         // PNG data should be a base64 data URL
         return result?.data?.startsWith("data:image/png") ? result.data : null
-    }
+    }, [requestTaggedExport])
 
     // The page the user is viewing (the first one with an external draw.io,
     // which cannot tell us), for the chat and edit_diagram.
@@ -302,7 +309,7 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
     // export's xml has compressed <diagram> payloads that would break
     // edit_diagram/display_diagram. Autosave keeps chartXML up to date with
     // the full uncompressed multi-page document (#879).
-    const fetchDiagramXml = async (): Promise<string> => {
+    const fetchDiagramXml = useCallback(async (): Promise<string> => {
         const result = await requestTaggedExport("fetch", "xmlsvg", 10000)
         if (!result?.data) {
             throw new Error("Chart export timed out after 10 seconds")
@@ -312,7 +319,7 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
             result.data,
             useCanvasStore.getState().currentPageId,
         )
-    }
+    }, [requestTaggedExport])
 
     // Like requestTaggedExport, with the request's other parameters (a PNG's
     // page and width) and both parts of the answer
@@ -336,295 +343,337 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
         [],
     )
 
-    const showTransient = (xml: string) => {
-        if (!transientRef.current) {
-            pageBeforeTransientRef.current =
-                useCanvasStore.getState().currentPageId
-        }
-        transientRef.current = true
-        fullLoad(xml)
-    }
+    const showTransient = useCallback(
+        (xml: string) => {
+            if (!transientRef.current) {
+                pageBeforeTransientRef.current =
+                    useCanvasStore.getState().currentPageId
+            }
+            transientRef.current = true
+            fullLoad(xml)
+        },
+        [fullLoad],
+    )
 
-    const loadDiagram = (
-        chart: string,
-        skipValidation?: boolean,
-        mode: LoadMode = "load",
-        meta?: LoadMeta,
-    ): string | null => {
-        // The editor bridge is shared: a page that is gone (another language
-        // mounted a new one) must not change the new page's canvas
-        if (!mountedRef.current) return null
-        // A real document ends a transient one; the user goes back to the
-        // page they were on before it
-        const pageBeforeTransient = transientRef.current
-            ? pageBeforeTransientRef.current
-            : undefined
-        transientRef.current = false
-        let xmlToLoad = chart
+    const loadDiagram = useCallback(
+        (
+            chart: string,
+            skipValidation?: boolean,
+            mode: LoadMode = "load",
+            meta?: LoadMeta,
+        ): string | null => {
+            // The editor bridge is shared: a page that is gone (another language
+            // mounted a new one) must not change the new page's canvas
+            if (!mountedRef.current) return null
+            // A real document ends a transient one; the user goes back to the
+            // page they were on before it
+            const pageBeforeTransient = transientRef.current
+                ? pageBeforeTransientRef.current
+                : undefined
+            transientRef.current = false
+            let xmlToLoad = chart
 
-        // Validate XML structure before loading (unless skipped for internal
-        // use). Not strict: the XML may hold the user's own diagram, and the
-        // tool handlers check model XML strictly before it gets here.
-        if (!skipValidation) {
-            const validation = validateAndFixXml(chart, { strict: false })
-            if (!validation.valid) {
-                console.warn(
-                    "[loadDiagram] Validation error:",
-                    validation.error,
+            // Validate XML structure before loading (unless skipped for internal
+            // use). Not strict: the XML may hold the user's own diagram, and the
+            // tool handlers check model XML strictly before it gets here.
+            if (!skipValidation) {
+                const validation = validateAndFixXml(chart, { strict: false })
+                if (!validation.valid) {
+                    console.warn(
+                        "[loadDiagram] Validation error:",
+                        validation.error,
+                    )
+                    return validation.error
+                }
+                // Use fixed XML if auto-fix was applied
+                if (validation.fixed) {
+                    console.log(
+                        "[loadDiagram] Auto-fixed XML issues:",
+                        validation.fixes,
+                    )
+                    xmlToLoad = validation.fixed
+                }
+            }
+
+            xmlToLoad = withPageDefaults(xmlToLoad)
+
+            const previousXml = chartXMLRef.current
+            if (mode === "preview" && turnBaseRef.current === null) {
+                turnBaseRef.current = previousXml
+            }
+            const beforeXml = turnBaseRef.current ?? previousXml
+            if (mode !== "preview") turnBaseRef.current = null
+
+            // Keep chartXML in sync even when diagrams are injected (e.g., display_diagram tool)
+            updateChartXML(xmlToLoad)
+
+            let applied = false
+            if (
+                mode !== "load" &&
+                pendingLoadsRef.current === 0 &&
+                canReplaceDiagram(xmlToLoad)
+            ) {
+                try {
+                    if (mode === "preview") previewDiagram(xmlToLoad)
+                    else if (mode === "commit") commitDiagram(xmlToLoad)
+                    else revertPreview(xmlToLoad)
+                    applied = true
+                } catch (error) {
+                    console.warn("[loadDiagram] Editor update failed:", error)
+                }
+            }
+            if (!applied) {
+                // A full load replaces any preview, and its base is stale now
+                resetPreview()
+                fullLoad(
+                    xmlToLoad,
+                    pageBeforeTransient ?? meta?.pageId ?? undefined,
+                    mode === "load" && !meta?.keepView,
                 )
-                return validation.error
             }
-            // Use fixed XML if auto-fix was applied
-            if (validation.fixed) {
-                console.log(
-                    "[loadDiagram] Auto-fixed XML issues:",
-                    validation.fixes,
-                )
-                xmlToLoad = validation.fixed
+
+            if (mode === "commit") {
+                commitHandlerRef.current?.({
+                    beforeXml,
+                    afterXml: xmlToLoad,
+                    toolCallId: meta?.toolCallId,
+                    pageId: meta?.pageId,
+                })
             }
-        }
 
-        xmlToLoad = withPageDefaults(xmlToLoad)
+            return null
+        },
+        [updateChartXML],
+    )
 
-        const previousXml = chartXMLRef.current
-        if (mode === "preview" && turnBaseRef.current === null) {
-            turnBaseRef.current = previousXml
-        }
-        const beforeXml = turnBaseRef.current ?? previousXml
-        if (mode !== "preview") turnBaseRef.current = null
-
-        // Keep chartXML in sync even when diagrams are injected (e.g., display_diagram tool)
-        updateChartXML(xmlToLoad)
-
-        let applied = false
-        if (
-            mode !== "load" &&
-            pendingLoadsRef.current === 0 &&
-            canReplaceDiagram(xmlToLoad)
-        ) {
-            try {
-                if (mode === "preview") previewDiagram(xmlToLoad)
-                else if (mode === "commit") commitDiagram(xmlToLoad)
-                else revertPreview(xmlToLoad)
-                applied = true
-            } catch (error) {
-                console.warn("[loadDiagram] Editor update failed:", error)
-            }
-        }
-        if (!applied) {
-            // A full load replaces any preview, and its base is stale now
-            resetPreview()
-            fullLoad(
-                xmlToLoad,
-                pageBeforeTransient ?? meta?.pageId ?? undefined,
-                mode === "load" && !meta?.keepView,
-            )
-        }
-
-        if (mode === "commit") {
-            commitHandlerRef.current?.({
-                beforeXml,
-                afterXml: xmlToLoad,
-                toolCallId: meta?.toolCallId,
-                pageId: meta?.pageId,
-            })
-        }
-
-        return null
-    }
-
-    const startTurn = () => {
+    const startTurn = useCallback(() => {
         turnBaseRef.current = null
         resetPreview()
-    }
+    }, [])
 
     // Each export result goes to the caller that asked for it, by its tag
-    const handleDiagramExport = (data: DrawioExportEvent) => {
+    const handleDiagramExport = useCallback((data: DrawioExportEvent) => {
         const tag = data.message?.message
         if (!tag) return
         exportResolversRef.current[tag]?.({ data: data.data, xml: data.xml })
-    }
+    }, [])
 
     // The frame registers this callback once per iframe mount, so it must
     // read refs: state captured in its closure would stay stale after a remount
-    const handleDiagramAutoSave = (data: { xml?: string }) => {
-        if (!data?.xml) return
-        // An edit of a transient document is not the diagram's; nor is one
-        // of the canvas a full load still on its way replaces (draw.io
-        // reports each load, in order, so no autosave of the new document
-        // comes before that)
-        if (transientRef.current || pendingLoadsRef.current > 0) return
-        // Don't overwrite a pending restore - if we have a diagram but
-        // DrawIO hasn't loaded yet, it means we're waiting to restore
-        if (!hasCalledOnLoadRef.current && chartXMLRef.current) return
-        // Only the view moved, or draw.io saved what it just loaded: nothing
-        // changed, and a save would put a chat that was only opened first
-        // in the list
-        if (withoutView(data.xml) === withoutView(chartXMLRef.current)) return
-        updateChartXML(data.xml)
-    }
+    const handleDiagramAutoSave = useCallback(
+        (data: { xml?: string }) => {
+            if (!data?.xml) return
+            // An edit of a transient document is not the diagram's; nor is one
+            // of the canvas a full load still on its way replaces (draw.io
+            // reports each load, in order, so no autosave of the new document
+            // comes before that)
+            if (transientRef.current || pendingLoadsRef.current > 0) return
+            // Don't overwrite a pending restore - if we have a diagram but
+            // DrawIO hasn't loaded yet, it means we're waiting to restore
+            if (!hasCalledOnLoadRef.current && chartXMLRef.current) return
+            // Only the view moved, or draw.io saved what it just loaded: nothing
+            // changed, and a save would put a chat that was only opened first
+            // in the list
+            if (withoutView(data.xml) === withoutView(chartXMLRef.current))
+                return
+            updateChartXML(data.xml)
+        },
+        [updateChartXML],
+    )
 
-    const clearDiagram = () => {
+    const clearDiagram = useCallback(() => {
         const emptyDiagram = BLANK_MXFILE
         // Skip validation for trusted internal template (loadDiagram also sets chartXML)
         loadDiagram(emptyDiagram, true)
         latestSvgRef.current = ""
-    }
-
-    const saveDiagramToFile = async (
-        filename: string,
-        format: ExportFormat,
-        sessionId?: string,
-        successMessage?: string,
-    ) => {
-        // Map format to draw.io export format
-        const drawioFormat =
-            format === "drawio" || format === "xmlsvg" ? "xmlsvg" : format
-        // Pictures get a margin; a PNG twice the size, of the page on
-        // screen (draw.io renders the first page otherwise), on white
-        // unless the user asked for a transparent background
-        const imageOptions =
-            format === "drawio"
-                ? {}
-                : format === "png"
-                  ? {
-                        border: 20,
-                        scale: 2,
-                        currentPage: true,
-                        ...(prefersTransparentPng()
-                            ? { transparent: true }
-                            : { background: "#ffffff" }),
-                    }
-                  : { border: 20 }
-
-        // Each save has its own request id, so two at once never swap
-        // results. A large PNG takes a while to render.
-        const result = await requestExport(
-            { format: drawioFormat, ...imageOptions },
-            30000,
-        )
-        if (!result?.data) {
-            console.warn(
-                "Diagram export for saving failed (editor not ready or timed out)",
-            )
-            return
-        }
-        const exportData = result.data
-        const fullDiagramXML = result.xml
-        let fileContent: string
-        let mimeType: string
-        let extension: string
-
-        if (format === "drawio") {
-            // Prefer the complete document from the export event so all pages are saved.
-            const xml = fullDiagramXML?.trim()
-                ? fullDiagramXML
-                : extractDiagramXML(exportData)
-            fileContent =
-                normalizeToMxfile(xml, {
-                    pageId: "page-1",
-                    pageName: "Page-1",
-                }) ?? xml
-            mimeType = "application/xml"
-            extension = ".drawio"
-        } else if (format === "png") {
-            // PNG data comes as base64 data URL
-            fileContent = exportData
-            mimeType = "image/png"
-            extension = ".png"
-        } else if (format === "xmlsvg") {
-            // Editable SVG: pass data URL directly (like PNG)
-            fileContent = exportData
-            mimeType = "image/svg+xml"
-            extension = ".drawio.svg"
-        } else {
-            // SVG format (view-only)
-            fileContent = exportData
-            mimeType = "image/svg+xml"
-            extension = ".svg"
-        }
-
-        // Log save event to Langfuse (flags the trace)
-        logSaveToLangfuse(filename, format, sessionId)
-
-        // Handle download
-        let url: string
-        if (fileContent.startsWith("data:")) {
-            // Already a data URL (PNG)
-            url = fileContent
-        } else {
-            const blob = new Blob([fileContent], { type: mimeType })
-            url = URL.createObjectURL(blob)
-        }
-
-        const a = document.createElement("a")
-        a.href = url
-        a.download = `${filename}${extension}`
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
-
-        // Show success toast after download is initiated
-        if (successMessage) {
-            toast.success(formatMessage(successMessage, { name: a.download }), {
-                duration: 4000,
-            })
-        }
-
-        // Delay URL revocation to ensure download completes
-        if (!url.startsWith("data:")) {
-            setTimeout(() => URL.revokeObjectURL(url), 100)
-        }
-    }
+    }, [loadDiagram])
 
     // Log save event to Langfuse (just flags the trace, doesn't send content)
-    const logSaveToLangfuse = async (
-        filename: string,
-        format: string,
-        sessionId?: string,
-    ) => {
-        try {
-            await fetch(getApiEndpoint("/api/log-save"), {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ filename, format, sessionId }),
-            })
-        } catch (error) {
-            console.warn("Failed to log save to Langfuse:", error)
-        }
-    }
+    const logSaveToLangfuse = useCallback(
+        async (filename: string, format: string, sessionId?: string) => {
+            try {
+                await fetch(getApiEndpoint("/api/log-save"), {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ filename, format, sessionId }),
+                })
+            } catch (error) {
+                console.warn("Failed to log save to Langfuse:", error)
+            }
+        },
+        [],
+    )
 
-    const setCommitHandler = (
-        handler: ((commit: DiagramCommit) => void) | null,
-    ) => {
-        commitHandlerRef.current = handler
-    }
+    const saveDiagramToFile = useCallback(
+        async (
+            filename: string,
+            format: ExportFormat,
+            sessionId?: string,
+            successMessage?: string,
+        ) => {
+            // Map format to draw.io export format
+            const drawioFormat =
+                format === "drawio" || format === "xmlsvg" ? "xmlsvg" : format
+            // Pictures get a margin; a PNG twice the size, of the page on
+            // screen (draw.io renders the first page otherwise), on white
+            // unless the user asked for a transparent background
+            const imageOptions =
+                format === "drawio"
+                    ? {}
+                    : format === "png"
+                      ? {
+                            border: 20,
+                            scale: 2,
+                            currentPage: true,
+                            ...(prefersTransparentPng()
+                                ? { transparent: true }
+                                : { background: "#ffffff" }),
+                        }
+                      : { border: 20 }
+
+            // Each save has its own request id, so two at once never swap
+            // results. A large PNG takes a while to render.
+            const result = await requestExport(
+                { format: drawioFormat, ...imageOptions },
+                30000,
+            )
+            if (!result?.data) {
+                console.warn(
+                    "Diagram export for saving failed (editor not ready or timed out)",
+                )
+                return
+            }
+            const exportData = result.data
+            const fullDiagramXML = result.xml
+            let fileContent: string
+            let mimeType: string
+            let extension: string
+
+            if (format === "drawio") {
+                // Prefer the complete document from the export event so all pages are saved.
+                const xml = fullDiagramXML?.trim()
+                    ? fullDiagramXML
+                    : extractDiagramXML(exportData)
+                fileContent =
+                    normalizeToMxfile(xml, {
+                        pageId: "page-1",
+                        pageName: "Page-1",
+                    }) ?? xml
+                mimeType = "application/xml"
+                extension = ".drawio"
+            } else if (format === "png") {
+                // PNG data comes as base64 data URL
+                fileContent = exportData
+                mimeType = "image/png"
+                extension = ".png"
+            } else if (format === "xmlsvg") {
+                // Editable SVG: pass data URL directly (like PNG)
+                fileContent = exportData
+                mimeType = "image/svg+xml"
+                extension = ".drawio.svg"
+            } else {
+                // SVG format (view-only)
+                fileContent = exportData
+                mimeType = "image/svg+xml"
+                extension = ".svg"
+            }
+
+            // Log save event to Langfuse (flags the trace)
+            logSaveToLangfuse(filename, format, sessionId)
+
+            // Handle download
+            let url: string
+            if (fileContent.startsWith("data:")) {
+                // Already a data URL (PNG)
+                url = fileContent
+            } else {
+                const blob = new Blob([fileContent], { type: mimeType })
+                url = URL.createObjectURL(blob)
+            }
+
+            const a = document.createElement("a")
+            a.href = url
+            a.download = `${filename}${extension}`
+            document.body.appendChild(a)
+            a.click()
+            document.body.removeChild(a)
+
+            // Show success toast after download is initiated
+            if (successMessage) {
+                toast.success(
+                    formatMessage(successMessage, { name: a.download }),
+                    {
+                        duration: 4000,
+                    },
+                )
+            }
+
+            // Delay URL revocation to ensure download completes
+            if (!url.startsWith("data:")) {
+                setTimeout(() => URL.revokeObjectURL(url), 100)
+            }
+        },
+        [requestExport, logSaveToLangfuse],
+    )
+
+    const setCommitHandler = useCallback(
+        (handler: ((commit: DiagramCommit) => void) | null) => {
+            commitHandlerRef.current = handler
+        },
+        [],
+    )
 
     return (
         <DiagramContext.Provider
-            value={{
-                chartXML,
-                chartXMLRef,
-                latestSvgRef,
-                loadDiagram,
-                fetchDiagramXml,
-                drawioRef,
-                handleDiagramExport,
-                handleDiagramAutoSave,
-                clearDiagram,
-                saveDiagramToFile,
-                getThumbnailSvg,
-                getVersionSvg,
-                captureValidationPng,
-                requestExport,
-                showTransient,
-                hasPendingLoad: () => pendingLoadsRef.current > 0,
-                isDrawioReady,
-                onDrawioLoad,
-                resetDrawioReady,
-                setCommitHandler,
-                startTurn,
-            }}
+            value={
+                // Performans denetimi #2: değer her render'da yeniden
+                // üretilirse tüm useDiagram() tüketicileri gereksiz yeniden
+                // render olur. Bağlılıklar yalnızca gerçekten değişenler.
+                useMemo(
+                    () => ({
+                        chartXML,
+                        chartXMLRef,
+                        latestSvgRef,
+                        loadDiagram,
+                        fetchDiagramXml,
+                        drawioRef,
+                        handleDiagramExport,
+                        handleDiagramAutoSave,
+                        clearDiagram,
+                        saveDiagramToFile,
+                        getThumbnailSvg,
+                        getVersionSvg,
+                        captureValidationPng,
+                        requestExport,
+                        showTransient,
+                        hasPendingLoad: () => pendingLoadsRef.current > 0,
+                        isDrawioReady,
+                        onDrawioLoad,
+                        resetDrawioReady,
+                        setCommitHandler,
+                        startTurn,
+                    }),
+                    [
+                        chartXML,
+                        isDrawioReady,
+                        loadDiagram,
+                        fetchDiagramXml,
+                        handleDiagramExport,
+                        handleDiagramAutoSave,
+                        clearDiagram,
+                        saveDiagramToFile,
+                        getThumbnailSvg,
+                        getVersionSvg,
+                        captureValidationPng,
+                        requestExport,
+                        showTransient,
+                        onDrawioLoad,
+                        resetDrawioReady,
+                        setCommitHandler,
+                        startTurn,
+                    ],
+                )
+            }
         >
             {children}
         </DiagramContext.Provider>

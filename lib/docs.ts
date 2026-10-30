@@ -204,7 +204,11 @@ export function resolveDocLink(
     lang: Locale,
     image = false,
 ): string {
-    if (/^([a-z]+:|#|\/\/)/i.test(href)) return href
+    // Yalnızca güvenli şemalar geçer: http(s), mailto, sayfa içi çapa ve
+    // protokole göreli yollar. "javascript:" gibi çalıştırılabilir şemalar
+    // düşürülür (derinlemesine savunma; içerik repo dosyalarından gelir)
+    if (/^(https?:|mailto:|#|\/\/)/i.test(href)) return href
+    if (/^[a-z]+:/i.test(href)) return "#"
     const [path, hash] = href.split("#")
     const dir = repoPath.split("/").slice(0, -1)
     const parts = [...dir]

@@ -5,28 +5,71 @@
 import { lookup } from "node:dns/promises"
 
 /**
+ * Expand an IPv6 address to its full 8-group hexadecimal form.
+ * Handles "::" compression, mixed IPv4-mapped notation and zone IDs.
+ * Returns null for addresses that are not valid IPv6.
+ */
+function expandIpv6(addr: string): string[] | null {
+    const cleaned = addr.split("%")[0] // drop zone id (fe80::1%eth0)
+    // Mixed notation ::ffff:192.168.1.1 -> ::ffff:c0a8:101
+    const mixed = cleaned.match(/^(.*:)(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$/)
+    let body = cleaned
+    if (mixed) {
+        const octets = mixed[2].split(".").map(Number)
+        if (octets.length !== 4 || octets.some((n) => n > 255)) return null
+        const hi = ((octets[0] << 8) | octets[1]).toString(16)
+        const lo = ((octets[2] << 8) | octets[3]).toString(16)
+        body = `${mixed[1]}${hi}:${lo}`
+    }
+    const parts = body.split("::")
+    if (parts.length > 2) return null
+    const head = parts[0] ? parts[0].split(":").filter(Boolean) : []
+    const tail =
+        parts.length === 2 && parts[1]
+            ? parts[1].split(":").filter(Boolean)
+            : []
+    const missing = parts.length === 2 ? 8 - head.length - tail.length : 0
+    if (missing < 0 || (parts.length === 1 && head.length !== 8)) return null
+    const groups = [...head, ...Array(missing).fill("0"), ...tail]
+    if (groups.length !== 8) return null
+    return groups.map((g) => {
+        if (!/^[0-9a-f]{1,4}$/i.test(g)) return "?"
+        return g.padStart(4, "0").toLowerCase()
+    })
+}
+
+/**
  * Check if an IP address (IPv4 or IPv6) belongs to a private/internal range.
  * Works for both user-supplied literal IPs and DNS-resolved addresses.
  */
 function isPrivateIp(ip: string): boolean {
     const addr = ip.toLowerCase().replace(/^\[|\]$/g, "")
 
-    // IPv6
+    // IPv6 (full, compressed and IPv4-mapped notations)
     if (addr.includes(":")) {
-        if (addr === "::1" || addr === "::") return true
-        // unique-local (fc00::/7) and IPv4-mapped (::ffff:0:0/96)
+        const groups = expandIpv6(addr)
+        if (!groups) return true // malformed -> fail closed
+        if (groups.includes("?")) return true
+        const first = groups[0]
+        // loopback (::1) and unspecified (::)
+        if (groups.every((g) => g === "0000")) return true
         if (
-            addr.startsWith("fc") ||
-            addr.startsWith("fd") ||
-            addr.startsWith("::ffff:")
-        ) {
+            groups.slice(0, 7).every((g) => g === "0000") &&
+            groups[7] === "0001"
+        )
             return true
-        }
-        // link-local (fe80::/10)
-        const linkLocal = addr.match(/^fe([0-9a-f]{2}):/)
-        if (linkLocal) {
-            const high = parseInt(linkLocal[1], 16)
-            if (high >= 0x80 && high <= 0xbf) return true
+        // unique-local fc00::/7
+        if (first >= "fc00" && first <= "fdff") return true
+        // link-local fe80::/10
+        if (first >= "fe80" && first <= "febf") return true
+        // IPv4-mapped ::ffff:0:0/96 — validate the embedded IPv4
+        if (
+            groups.slice(0, 5).every((g) => g === "0000") &&
+            groups[5] === "ffff"
+        ) {
+            const hi = parseInt(groups[6], 16)
+            const lo = parseInt(groups[7], 16)
+            return isPrivateIpv4(hi >> 8, hi & 0xff, lo >> 8, lo & 0xff)
         }
         return false
     }
@@ -34,16 +77,24 @@ function isPrivateIp(ip: string): boolean {
     // IPv4
     const ipv4Match = addr.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/)
     if (ipv4Match) {
-        const [, a, b] = ipv4Match.map(Number)
-        if (a === 10) return true // 10.0.0.0/8
-        if (a === 172 && b >= 16 && b <= 31) return true // 172.16.0.0/12
-        if (a === 192 && b === 168) return true // 192.168.0.0/16
-        if (a === 169 && b === 254) return true // 169.254.0.0/16 (link-local)
-        if (a === 127) return true // 127.0.0.0/8 (loopback)
-        if (a === 0) return true // 0.0.0.0/8
-        if (a === 100 && b >= 64 && b <= 127) return true // 100.64.0.0/10 (CGNAT, used by some cloud internal networks)
+        const [, a, b, c, d] = ipv4Match.map(Number)
+        return isPrivateIpv4(a, b, c, d)
     }
 
+    return false
+}
+
+function isPrivateIpv4(a: number, b: number, c: number, d: number): boolean {
+    if ([a, b, c, d].some((n) => n > 255)) return true // malformed -> fail closed
+    if (a === 10) return true // 10.0.0.0/8
+    if (a === 172 && b >= 16 && b <= 31) return true // 172.16.0.0/12
+    if (a === 192 && b === 168) return true // 192.168.0.0/16
+    if (a === 169 && b === 254) return true // 169.254.0.0/16 (link-local, incl. cloud metadata)
+    if (a === 127) return true // 127.0.0.0/8 (loopback)
+    if (a === 0) return true // 0.0.0.0/8
+    if (a === 100 && b >= 64 && b <= 127) return true // 100.64.0.0/10 (CGNAT)
+    if (a === 192 && b === 0 && c === 2) return true // 192.0.2.0/24 (TEST-NET-1)
+    if (a === 198 && b === 18) return true // 198.18.0.0/15 (benchmarking)
     return false
 }
 
@@ -108,12 +159,13 @@ export async function isPrivateUrl(urlString: string): Promise<boolean> {
 }
 
 /**
- * Whether private URLs are allowed (defaults to true)
- * Set ALLOW_PRIVATE_URLS=false to block private URLs
- * Read per call so admin-panel changes apply without restart
+ * Whether private URLs are allowed. SECURE BY DEFAULT: blocked unless
+ * explicitly opted in. Self-hosted setups that point a provider base URL
+ * at a LAN service (Ollama, LM Studio, ...) set ALLOW_PRIVATE_URLS=true.
+ * Read per call so admin-panel changes apply without restart.
  */
 export function allowPrivateUrls(): boolean {
-    return process.env.ALLOW_PRIVATE_URLS !== "false"
+    return process.env.ALLOW_PRIVATE_URLS === "true"
 }
 
 /** A redirect the guard below refused; its text is safe to show */

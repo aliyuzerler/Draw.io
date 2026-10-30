@@ -20,13 +20,17 @@ import {
     usesServerCredentials,
     usesServerEndpoint,
 } from "@/lib/ai-providers"
-import { getSessionFromRequest } from "@/lib/auth/session"
+import { getSessionFromRequestVerified } from "@/lib/auth/session-server"
 import {
     diagramContextText,
     dropInvalidToolCalls,
     fixToolInputJson,
     formatSelectionContext,
+    MAX_BODY_BYTES,
+    MAX_MESSAGES,
+    MAX_TOTAL_TEXT_CHARS,
     parseStringifiedArrays,
+    readLimitedJsonBody,
     validateFileParts,
     withoutOldAttachments,
 } from "@/lib/chat-helpers"
@@ -102,7 +106,18 @@ async function handleChatRequest(req: Request): Promise<Response> {
     const accessDenied = checkAccessCode(req)
     if (accessDenied) return accessDenied
 
-    const body = await req.json()
+    // Bellek DoS'u engeli: istek gövdesini sınırıyla oku (JSON)
+    const bodyResult = await readLimitedJsonBody(req, MAX_BODY_BYTES)
+    if (bodyResult === "too-large") {
+        return Response.json(
+            { error: "İstek gövdesi çok büyük." },
+            { status: 413 },
+        )
+    }
+    if (bodyResult === "invalid") {
+        return Response.json({ error: "Geçersiz gövde." }, { status: 400 })
+    }
+    const body = bodyResult as Record<string, unknown>
     // The messages in the SDK's UI shape. The route writes its own system
     // messages, so none may come from the client.
     const validated = await safeValidateUIMessages<ChatUIMessage>({
@@ -115,7 +130,38 @@ async function handleChatRequest(req: Request): Promise<Response> {
         )
     }
     const messages = validated.data.filter((m) => m.role !== "system")
-    const { xml, sessionId } = body
+    // Konuşma boyutu sınırları (bellek/doS koruması)
+    if (messages.length > MAX_MESSAGES) {
+        return Response.json(
+            {
+                error: `Çok fazla mesaj. En fazla ${MAX_MESSAGES} mesaj gönderilebilir.`,
+            },
+            { status: 400 },
+        )
+    }
+    const totalTextChars = messages.reduce(
+        (sum, m) =>
+            sum +
+            m.parts.reduce(
+                (acc: number, p: any) =>
+                    acc +
+                    (p.type === "text" && typeof p.text === "string"
+                        ? p.text.length
+                        : 0),
+                0,
+            ),
+        0,
+    )
+    if (totalTextChars > MAX_TOTAL_TEXT_CHARS) {
+        return Response.json(
+            { error: "Mesaj metni çok uzun." },
+            { status: 400 },
+        )
+    }
+    // Gövde alanları açıkça tiplenir (body kaydı unknown değerler taşır)
+    const xml = typeof body.xml === "string" ? body.xml : ""
+    const sessionId =
+        typeof body.sessionId === "string" ? body.sessionId : undefined
     // A turn's later requests (after a tool result, a retry) continue the
     // same assistant message, which carries what the earlier ones used
     const lastMessage = messages.at(-1)
@@ -132,13 +178,11 @@ async function handleChatRequest(req: Request): Promise<Response> {
     const userId = getUserIdFromRequest(req)
     // Synora oturumu: giriş yapan kullanıcılar IP kotası yerine plan
     // limitlerine tabidir (Faz 2). Session null olabilir.
-    const session = await getSessionFromRequest(req)
+    const session = await getSessionFromRequestVerified(req)
 
     // Validate sessionId for Langfuse (must be string, max 200 chars)
     const validSessionId =
-        sessionId && typeof sessionId === "string" && sessionId.length <= 200
-            ? sessionId
-            : undefined
+        sessionId && sessionId.length <= 200 ? sessionId : undefined
 
     // Extract user input text for Langfuse trace
     // Find the last USER message, not just the last message (which could be assistant in multi-step tool flows)
@@ -203,9 +247,17 @@ async function handleChatRequest(req: Request): Promise<Response> {
         PROVIDERS[requestedProvider as ProviderName].credential === "none"
     if (onSiteFunction) baseUrl = edgeOneEndpoint(req)
 
-    // Same rule as validate-model: with ALLOW_PRIVATE_URLS=false a request may
-    // not point the server at a private or internal address
-    if (baseUrl && !allowPrivateUrls() && (await isPrivateUrl(baseUrl))) {
+    // Same rule as validate-model: unless private URLs are allowed, a
+    // request may not point the server at a private or internal address.
+    // Exemption: the site's own EdgeOne function endpoint — it is this
+    // deployment's origin (often a loopback address in tests/self-host),
+    // not a client-chosen destination.
+    if (
+        baseUrl &&
+        !onSiteFunction &&
+        !allowPrivateUrls() &&
+        (await isPrivateUrl(baseUrl))
+    ) {
         return Response.json(
             { error: "Private or internal base URLs are not allowed." },
             { status: 400 },
@@ -304,36 +356,44 @@ async function handleChatRequest(req: Request): Promise<Response> {
     let synoraUsageEventId: string | null = null
     if (onServer && session && process.env.DATABASE_URL) {
         try {
-            const user = await db.user.findUnique({
-                where: { id: session.sub },
-                select: { id: true, status: true, planId: true },
-            })
-            if (user && user.status === "ACTIVE") {
-                const plan = await db.plan.findUnique({
-                    where: { id: user.planId },
-                })
-                if (plan) {
+            // Kotalar Serializable işlemde atomik olarak uygulanır: paralel
+            // istekler limiti sayım-sonrası-oluştur yarışıyla aşamaz (TOCTOU).
+            const outcome = await db.$transaction(
+                async (tx) => {
+                    const user = await tx.user.findUnique({
+                        where: { id: session.sub },
+                        select: { id: true, status: true, planId: true },
+                    })
+                    // Askıya alınmış veya silinmiş hesap sunucu anahtarlarını
+                    // kullanamaz (JWT 30 gün yaşayabilir)
+                    if (!user || user.status !== "ACTIVE") {
+                        return { blocked: true as const }
+                    }
+                    const plan = await tx.plan.findUnique({
+                        where: { id: user.planId },
+                    })
+                    if (!plan) return { ok: true as const, eventId: null }
                     const dayStart = new Date()
                     dayStart.setHours(0, 0, 0, 0)
                     const monthStart = new Date()
                     monthStart.setDate(1)
                     monthStart.setHours(0, 0, 0, 0)
                     const [daily, monthly, tokens] = await Promise.all([
-                        db.usageEvent.count({
+                        tx.usageEvent.count({
                             where: {
                                 userId: user.id,
                                 kind: "chat",
                                 createdAt: { gte: dayStart },
                             },
                         }),
-                        db.usageEvent.count({
+                        tx.usageEvent.count({
                             where: {
                                 userId: user.id,
                                 kind: "chat",
                                 createdAt: { gte: monthStart },
                             },
                         }),
-                        db.usageEvent.aggregate({
+                        tx.usageEvent.aggregate({
                             where: {
                                 userId: user.id,
                                 kind: "chat",
@@ -352,51 +412,66 @@ async function handleChatRequest(req: Request): Promise<Response> {
                         plan.dailyRequestLimit >= 0 &&
                         daily >= plan.dailyRequestLimit
                     ) {
-                        return Response.json(
-                            {
-                                error: `Günlük AI istek sınırınıza ulaştınız (${plan.dailyRequestLimit}). Yarın tekrar deneyin veya planınızı yükseltin.`,
-                                type: "request",
-                                used: daily,
-                                limit: plan.dailyRequestLimit,
-                            },
-                            { status: 429 },
-                        )
+                        return {
+                            limited: "request" as const,
+                            period: "Günlük" as const,
+                            limit: plan.dailyRequestLimit,
+                            used: daily,
+                            suffix: "Yarın tekrar deneyin veya planınızı yükseltin." as const,
+                        }
                     }
                     if (
                         plan.monthlyRequestLimit >= 0 &&
                         monthly >= plan.monthlyRequestLimit
                     ) {
-                        return Response.json(
-                            {
-                                error: `Aylık AI istek sınırınıza ulaştınız (${plan.monthlyRequestLimit}). Planınızı yükseltin.`,
-                                type: "request",
-                                used: monthly,
-                                limit: plan.monthlyRequestLimit,
-                            },
-                            { status: 429 },
-                        )
+                        return {
+                            limited: "request" as const,
+                            period: "Aylık" as const,
+                            limit: plan.monthlyRequestLimit,
+                            used: monthly,
+                            suffix: "Planınızı yükseltin." as const,
+                        }
                     }
                     if (
                         plan.dailyTokenLimit >= 0 &&
                         usedTokens >= plan.dailyTokenLimit
                     ) {
-                        return Response.json(
-                            {
-                                error: `Günlük token sınırınıza ulaştınız (${plan.dailyTokenLimit}). Yarın tekrar deneyin veya planınızı yükseltin.`,
-                                type: "token",
-                                used: usedTokens,
-                                limit: plan.dailyTokenLimit,
-                            },
-                            { status: 429 },
-                        )
+                        return {
+                            limited: "token" as const,
+                            period: "Günlük" as const,
+                            limit: plan.dailyTokenLimit,
+                            used: usedTokens,
+                            suffix: "Yarın tekrar deneyin veya planınızı yükseltin." as const,
+                        }
                     }
-                    const event = await db.usageEvent.create({
+                    const event = await tx.usageEvent.create({
                         data: { userId: user.id, kind: "chat" },
                         select: { id: true },
                     })
-                    synoraUsageEventId = event.id
-                }
+                    return { ok: true as const, eventId: event.id }
+                },
+                { isolationLevel: "Serializable" },
+            )
+            if ("blocked" in outcome) {
+                return Response.json(
+                    {
+                        error: "Hesabınız aktif değil. Lütfen yöneticiyle iletişime geçin.",
+                    },
+                    { status: 403 },
+                )
             }
+            if ("limited" in outcome) {
+                return Response.json(
+                    {
+                        error: `${outcome.period} ${outcome.limited === "token" ? "token" : "AI istek"} sınırınıza ulaştınız (${outcome.limit}). ${outcome.suffix}`,
+                        type: outcome.limited,
+                        used: outcome.used,
+                        limit: outcome.limit,
+                    },
+                    { status: 429 },
+                )
+            }
+            synoraUsageEventId = outcome.eventId
         } catch (err) {
             console.error(
                 "[Synora] Kullanıcı kotası okunamadı; IP kotasına geçiliyor:",

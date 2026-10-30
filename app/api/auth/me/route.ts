@@ -20,12 +20,22 @@ export async function GET(req: Request) {
                     role: true,
                     planId: true,
                     status: true,
+                    sessionsInvalidatedAt: true,
                 },
             })
             if (!user || user.status === "SUSPENDED") {
                 return Response.json({ user: null })
             }
-            return Response.json({ user })
+            // Şifre sıfırlamadan önce verilmiş oturum geçersizdir
+            if (
+                user.sessionsInvalidatedAt &&
+                (session.iat ?? 0) * 1000 < user.sessionsInvalidatedAt.getTime()
+            ) {
+                return Response.json({ user: null })
+            }
+            return Response.json({
+                user: { ...user, sessionsInvalidatedAt: undefined },
+            })
         }
     } catch {
         // DB erişilemezse JWT bilgisiyle devam
