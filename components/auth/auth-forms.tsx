@@ -267,7 +267,21 @@ export function RegisterForm({ lang }: { lang: string }) {
                     {busy ? t.working : t.registerBtn}
                 </Button>
                 <p className="text-center text-xs text-muted-foreground">
-                    {t.termsNote}
+                    <Link
+                        href={`/${lang}/terms`}
+                        className="underline underline-offset-4 hover:text-foreground"
+                    >
+                        kullanım koşullarını
+                    </Link>{" "}
+                    ve{" "}
+                    <Link
+                        href={`/${lang}/privacy`}
+                        className="underline underline-offset-4 hover:text-foreground"
+                    >
+                        gizlilik politikasını (KVKK)
+                    </Link>{" "}
+                    kabul etmiş olursunuz.{" "}
+                    <span className="sr-only">{t.termsNote}</span>
                 </p>
             </form>
         </AuthCard>

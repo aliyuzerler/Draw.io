@@ -22,6 +22,8 @@ export function SiteFooter({ lang, path }: { lang: Locale; path: string }) {
             links: [
                 { label: t.editor, href: `/${lang}` },
                 { label: "Fiyatlandırma", href: `/${lang}/pricing` },
+                { label: "Gizlilik (KVKK)", href: `/${lang}/privacy` },
+                { label: "Kullanım Şartları", href: `/${lang}/terms` },
                 { label: t.desktop, href: RELEASES_URL },
                 { label: t.mcp, href: `/${lang}/mcp` },
                 {

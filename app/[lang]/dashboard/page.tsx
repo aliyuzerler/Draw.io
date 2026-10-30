@@ -9,6 +9,7 @@ import {
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound, redirect } from "next/navigation"
+import { AccountActions } from "@/components/auth/account-actions"
 import { authText } from "@/components/auth/auth-texts"
 import { DiagramsPanel } from "@/components/auth/diagrams-panel"
 import { LogoutButton } from "@/components/auth/logout-button"
@@ -236,6 +237,7 @@ export default async function DashboardPage({
                                 </dd>
                             </div>
                         </dl>
+                        <AccountActions lang={lang} />
                     </section>
 
                     {/* Plan */}

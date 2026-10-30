@@ -19,7 +19,13 @@ Proje; web uygulaması, Windows / macOS / Linux için masaüstü uygulaması ve 
 
 > **Bu proje hakkında:** Synora, [DayuanJiang/next-ai-draw-io](https://github.com/DayuanJiang/next-ai-draw-io) projesi temel alınarak Türkçe arayüzle ve SaaS yetenekleriyle geliştirilmektedir. Arayüzün varsayılan dili Türkçe; 559 arayüz metni ve **14 sayfalık dokümantasyonun tamamı** (`docs/tr/`) Türkçedir.
 >
-> **SaaS aşamaları (Faz 1 tamam):** kayıt ol / giriş yap / şifremi unuttum / şifre sıfırlama panelleri, JWT tabanlı oturum (httpOnly çerez), Prisma veritabanı şeması (kullanıcı, plan, diyagram, kullanım olayları), ücretsiz / pro / ekip planları, "Panelim" sayfası ve admin panelinde kullanıcı yönetimi. Sonraki fazlar: bulutta diyagram kalıcılığı, kullanıcı bazlı kota, iyzico abonelikleri, KVKK uyum sayfaları.
+> **SaaS dönüşümü tamamlandı (Faz 1-4):**
+> - **Faz 1 — Kimlik:** kayıt ol / giriş yap / şifremi unuttum / şifre sıfırlama panelleri, JWT oturumu (httpOnly çerez), Prisma şeması (User, Plan, PasswordResetToken, Diagram, UsageEvent, Subscription), admin panelinde kullanıcı yönetimi.
+> - **Faz 2 — Ürün:** bulutta diyagram kalıcılığı (kaydet/aç/yeniden adlandır/sil), Panelim'de "Diyagramlarım", editörde "Buluta kaydet", oturumlu kullanıcılarda plan bazlı kota (günlük/aylık istek + token), BYOK istekleri muaf.
+> - **Faz 3 — Gelir:** fiyatlandırma sayfası, yükseltme talebi akışı (PENDING abonelik), iyzico abonelik iskeleti + webhook (ACTIVE/PAST_DUE/CANCELED senkronu; uçtan uca test edildi).
+> - **Faz 4 — KVKK:** gizlilik aydınlatma metni (6698), kullanım şartları, tek tıkla veri dışa aktarma (JSON) ve şifre onaylı kalıcı hesap silme.
+>
+> Hızlı kurulum: `cp env.example .env` → `DATABASE_URL` ve `AUTH_SECRET` doldur → `npm install` → `npx prisma db push` → `npm run dev`. İlk kayıt olan kullanıcı otomatik yöneticidir.
 
 ## Ekran Görüntüleri
 
