@@ -21,6 +21,7 @@ export function SiteFooter({ lang, path }: { lang: Locale; path: string }) {
             title: t.product,
             links: [
                 { label: t.editor, href: `/${lang}` },
+                { label: "Fiyatlandırma", href: `/${lang}/pricing` },
                 { label: t.desktop, href: RELEASES_URL },
                 { label: t.mcp, href: `/${lang}/mcp` },
                 {

@@ -253,6 +253,12 @@ export default async function DashboardPage({
                                     : `${(effectivePlan.priceMonthly / 100).toLocaleString("tr-TR")} ₺/ay`}
                             </span>
                         </div>
+                        <Link
+                            href={`/${lang}/pricing`}
+                            className="mt-2 inline-flex items-center gap-1 text-[13px] font-medium text-foreground underline underline-offset-4"
+                        >
+                            Planları gör ve yükselt →
+                        </Link>
                         <dl className="mt-4 space-y-1.5 text-[13px]">
                             <div className="flex justify-between gap-2">
                                 <dt className="text-muted-foreground">
