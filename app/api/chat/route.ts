@@ -20,6 +20,7 @@ import {
     usesServerCredentials,
     usesServerEndpoint,
 } from "@/lib/ai-providers"
+import { getSessionFromRequest } from "@/lib/auth/session"
 import {
     diagramContextText,
     dropInvalidToolCalls,
@@ -31,6 +32,7 @@ import {
 } from "@/lib/chat-helpers"
 import { addReplyUsage, type ChatUIMessage } from "@/lib/chat-message"
 import { chatTools } from "@/lib/chat-tools"
+import { db } from "@/lib/db"
 import { withDeprecatedParamsFallback } from "@/lib/deprecated-params"
 import { diagramOf } from "@/lib/diagram-context"
 import {
@@ -128,6 +130,9 @@ async function handleChatRequest(req: Request): Promise<Response> {
 
     // Get user ID for Langfuse tracking and quota
     const userId = getUserIdFromRequest(req)
+    // Synora oturumu: giriş yapan kullanıcılar IP kotası yerine plan
+    // limitlerine tabidir (Faz 2). Session null olabilir.
+    const session = await getSessionFromRequest(req)
 
     // Validate sessionId for Langfuse (must be string, max 200 chars)
     const validSessionId =
@@ -290,9 +295,127 @@ async function handleChatRequest(req: Request): Promise<Response> {
         clientBaseUrl,
         clientOverrides.apiKey,
     )
+    const onServer = onServerCredentials || onServerEndpoint
+
+    // === SYNORA USER QUOTA (Faz 2) ===
+    // Oturum açmış kullanıcı sunucu kaynaklarını kullanıyorsa günlük/aylık
+    // istek ve günlük token limitleri planından okunur; IP kotası atlanır.
+    // BYOK (kendi anahtarı) istekleri sayılmaz.
+    let synoraUsageEventId: string | null = null
+    if (onServer && session && process.env.DATABASE_URL) {
+        try {
+            const user = await db.user.findUnique({
+                where: { id: session.sub },
+                select: { id: true, status: true, planId: true },
+            })
+            if (user && user.status === "ACTIVE") {
+                const plan = await db.plan.findUnique({
+                    where: { id: user.planId },
+                })
+                if (plan) {
+                    const dayStart = new Date()
+                    dayStart.setHours(0, 0, 0, 0)
+                    const monthStart = new Date()
+                    monthStart.setDate(1)
+                    monthStart.setHours(0, 0, 0, 0)
+                    const [daily, monthly, tokens] = await Promise.all([
+                        db.usageEvent.count({
+                            where: {
+                                userId: user.id,
+                                kind: "chat",
+                                createdAt: { gte: dayStart },
+                            },
+                        }),
+                        db.usageEvent.count({
+                            where: {
+                                userId: user.id,
+                                kind: "chat",
+                                createdAt: { gte: monthStart },
+                            },
+                        }),
+                        db.usageEvent.aggregate({
+                            where: {
+                                userId: user.id,
+                                kind: "chat",
+                                createdAt: { gte: dayStart },
+                            },
+                            _sum: {
+                                promptTokens: true,
+                                completionTokens: true,
+                            },
+                        }),
+                    ])
+                    const usedTokens =
+                        (tokens._sum.promptTokens ?? 0) +
+                        (tokens._sum.completionTokens ?? 0)
+                    if (
+                        plan.dailyRequestLimit >= 0 &&
+                        daily >= plan.dailyRequestLimit
+                    ) {
+                        return Response.json(
+                            {
+                                error: `Günlük AI istek sınırınıza ulaştınız (${plan.dailyRequestLimit}). Yarın tekrar deneyin veya planınızı yükseltin.`,
+                                type: "request",
+                                used: daily,
+                                limit: plan.dailyRequestLimit,
+                            },
+                            { status: 429 },
+                        )
+                    }
+                    if (
+                        plan.monthlyRequestLimit >= 0 &&
+                        monthly >= plan.monthlyRequestLimit
+                    ) {
+                        return Response.json(
+                            {
+                                error: `Aylık AI istek sınırınıza ulaştınız (${plan.monthlyRequestLimit}). Planınızı yükseltin.`,
+                                type: "request",
+                                used: monthly,
+                                limit: plan.monthlyRequestLimit,
+                            },
+                            { status: 429 },
+                        )
+                    }
+                    if (
+                        plan.dailyTokenLimit >= 0 &&
+                        usedTokens >= plan.dailyTokenLimit
+                    ) {
+                        return Response.json(
+                            {
+                                error: `Günlük token sınırınıza ulaştınız (${plan.dailyTokenLimit}). Yarın tekrar deneyin veya planınızı yükseltin.`,
+                                type: "token",
+                                used: usedTokens,
+                                limit: plan.dailyTokenLimit,
+                            },
+                            { status: 429 },
+                        )
+                    }
+                    const event = await db.usageEvent.create({
+                        data: { userId: user.id, kind: "chat" },
+                        select: { id: true },
+                    })
+                    synoraUsageEventId = event.id
+                }
+            }
+        } catch (err) {
+            console.error(
+                "[Synora] Kullanıcı kotası okunamadı; IP kotasına geçiliyor:",
+                err,
+            )
+        }
+    }
+    // === SYNORA USER QUOTA END ===
+
+    // Quota is opt-in (DYNAMODB_QUOTA_TABLE) and counts what runs on the
+    // server's keys, or on the server's own endpoints: EdgeOne, its keyless
+    // Ollama, and anything at a private address (the server's network,
+    // which ignores a dummy key header). Bedrock and EdgeOne never use the
+    // base URL header. In the desktop app every endpoint is the user's.
+    // Synora oturumlu kullanıcılar yukarıdaki plan kotasına tabidir.
     const countsQuota =
         isQuotaEnabled() &&
-        (onServerCredentials || onServerEndpoint) &&
+        !synoraUsageEventId &&
+        onServer &&
         userId !== "anonymous"
     if (countsQuota) {
         const quotaCheck = await checkAndIncrementRequest(userId, {
@@ -535,6 +658,21 @@ async function handleChatRequest(req: Request): Promise<Response> {
                     : undefined
             if (countsQuota) {
                 await recordTokenUsage(userId, usage.totalTokens ?? 0)
+            }
+            if (synoraUsageEventId) {
+                await db.usageEvent
+                    .update({
+                        where: { id: synoraUsageEventId },
+                        data: {
+                            promptTokens: {
+                                increment: usage.inputTokens ?? 0,
+                            },
+                            completionTokens: {
+                                increment: usage.outputTokens ?? 0,
+                            },
+                        },
+                    })
+                    .catch(() => {})
             }
         },
         onFinish: ({ text }) => {

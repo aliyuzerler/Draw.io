@@ -10,6 +10,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound, redirect } from "next/navigation"
 import { authText } from "@/components/auth/auth-texts"
+import { DiagramsPanel } from "@/components/auth/diagrams-panel"
 import { LogoutButton } from "@/components/auth/logout-button"
 import { BrandMark } from "@/components/workspace/brand-mark"
 import { ensurePlans } from "@/lib/auth/seed"
@@ -336,6 +337,11 @@ export default async function DashboardPage({
                             {t.comingSoonDiagrams}
                         </p>
                     </section>
+                </div>
+
+                {/* Diyagramlarım — bulut kayıtları */}
+                <div className="mt-4">
+                    <DiagramsPanel lang={lang} />
                 </div>
 
                 {isAdmin && (

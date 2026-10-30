@@ -3,6 +3,7 @@
 import { MessageSquare, PanelRightOpen, Settings, Shapes } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
+import { CloudSaveButton } from "@/components/auth/cloud-save-button"
 import { UserMenu } from "@/components/auth/user-menu"
 import { CanvasStage } from "@/components/canvas/canvas-stage"
 import { CompareDialog } from "@/components/canvas/compare-dialog"
@@ -102,6 +103,7 @@ function StartBar({
                 Synora
             </span>
             <DocsButton />
+            <CloudSaveButton />
             <IconButton
                 label={dict.nav.settings}
                 onClick={() => openSettings()}
