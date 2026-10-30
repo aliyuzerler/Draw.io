@@ -196,7 +196,9 @@ export default function AdminPage() {
 
     // Highlight the section currently in view in the sidebar
     useEffect(() => {
-        if (!authedPassword) return
+        // Not authed yet. An empty string means a Synora admin session — the
+        // panel works without a password, so only null counts as "logged out".
+        if (authedPassword === null) return
         const observer = new IntersectionObserver(
             (entries) => {
                 const visible = entries
@@ -276,7 +278,7 @@ export default function AdminPage() {
     )
 
     const handleSave = useCallback(async () => {
-        if (!authedPassword || dirtyCount === 0) return
+        if (authedPassword === null || dirtyCount === 0) return
         setSaving(true)
         setSaveMessage(null)
         setErrors({})
@@ -340,7 +342,8 @@ export default function AdminPage() {
     ])
 
     // ── Login screen ─────────────────────────────────────────────────
-    if (!authedPassword) {
+    // Only null shows the gate: "" is a valid session-based login.
+    if (authedPassword === null) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-background p-4">
                 <form

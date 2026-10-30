@@ -26,6 +26,8 @@ Proje; web uygulaması, Windows / macOS / Linux için masaüstü uygulaması ve 
 > - **Faz 4 — KVKK:** gizlilik aydınlatma metni (6698), kullanım şartları, tek tıkla veri dışa aktarma (JSON) ve şifre onaylı kalıcı hesap silme.
 >
 > Hızlı kurulum: `cp env.example .env` → `DATABASE_URL` ve `AUTH_SECRET` doldur → `npm install` → `npx prisma db push` → `npm run dev`. İlk kayıt olan kullanıcı otomatik yöneticidir.
+>
+> 📸 **Tüm panellerin ekran görüntüleri ve açıklamaları:** [docs/DEGISIKLIKLER.md](./docs/DEGISIKLIKLER.md)
 
 ## Ekran Görüntüleri
 
@@ -44,6 +46,14 @@ Proje; web uygulaması, Windows / macOS / Linux için masaüstü uygulaması ve 
 | Ayarlar · Genel | Ayarlar · Çizim | MCP Sunucusu |
 |---|---|---|
 | ![Genel](./docs/images/04-settings-genel.png) | ![Çizim](./docs/images/05-settings-cizim.png) | ![MCP](./docs/images/08-mcp.png) |
+
+### SaaS panelleri
+
+| Giriş | Kayıt Ol | Panelim | Yönetim |
+|---|---|---|---|
+| ![Giriş](./docs/ekran-goruntuleri/01-giris.png) | ![Kayıt Ol](./docs/ekran-goruntuleri/02-kayit-ol.png) | ![Panelim](./docs/ekran-goruntuleri/05-panelim.png) | ![Yönetim](./docs/ekran-goruntuleri/06-yonetim-paneli.png) |
+
+Diğer tüm ekran görüntüleri (şifre sıfırlama, fiyatlandırma, KVKK sayfaları, hesap menüsü) ve tek tek açıklamaları: **[docs/DEGISIKLIKLER.md](./docs/DEGISIKLIKLER.md)**.
 
 ## Öne Çıkanlar
 
